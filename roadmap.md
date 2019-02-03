@@ -13,7 +13,7 @@
 
 #### Django Site
 
-ALL SITE TASKS MUST INCLUDE UNIT TESTS
+ALL SITE TASKS MUST INCLUDE UNIT TESTS WHEREVER POSSIBLE
 
 * DONE | PK | Project Setup
 * PK | Copy over static assets
@@ -22,9 +22,9 @@ ALL SITE TASKS MUST INCLUDE UNIT TESTS
 * get payment from stripe
 * Change user's information
 
-#####Django Site | API
+##### Django Site | API
 
-ALL SITE API TASKS MUST INCLUDE UNIT TESTS
+ALL SITE API TASKS MUST INCLUDE UNIT TESTS WHEREVER POSSIBLE
 
 * get journal id with phone number and lowercase journal name.
 * Add new journal to user
