@@ -3,7 +3,7 @@
 <head>
     {% include 'head.html' %}
     <!--CSS sheet for iPhone-->
-    <link rel="stylesheet" href="lib/devices.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/lib/devices.min.css" type="text/css">
     <!--TESTING ONLY, TODO: Self Host Icons-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!--stripe-->
@@ -11,9 +11,9 @@
     <!--Google API Client Library-->
     <script src="https://apis.google.com/js/client.js"></script>
     <!--Authorization Request Script-->
-    <script src="auth.js"></script>
+    <script src="/static/auth.js"></script>
     <!--Google Script Trigger-->
-    <script src="trigger.js"></script>
+    <script src="/static/trigger.js"></script>
 </head>
 <body>
 <div class="container">
@@ -235,7 +235,7 @@
 </div><!--container-->
 <!--Footer-->
 {% include 'footer.html' %}
-<script src="script.js"></script>
+<script src="/static/script.js"></script>
 <script>
 var handler = StripeCheckout.configure({
   key: 'pk_test_sR3Hd5BgBbf0BaeYEJx1qtVU',

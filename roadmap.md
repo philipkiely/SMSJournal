@@ -16,7 +16,7 @@
 ALL SITE TASKS MUST INCLUDE UNIT TESTS WHEREVER POSSIBLE
 
 * DONE | PK | Project Setup
-* PK | Copy over static assets
+* DONE | PK | Copy over static assets
 * Create new user
 * Link google account
 * get payment from stripe
