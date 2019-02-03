@@ -1,1 +1,267 @@
-yo sup
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+    <!--CSS sheet for iPhone-->
+    <link rel="stylesheet" href="lib/devices.min.css" type="text/css">
+    <!--JS Animation Library TODO: Remove, probably-->
+    <script src="lib/anime.min.js"></script>
+    <!--TESTING ONLY, TODO: Self Host Icons-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--stripe-->
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <!--Google API Client Library-->
+    <script src="https://apis.google.com/js/client.js"></script>
+    <!--Authorization Request Script-->
+    <script src="auth.js"></script>
+    <!--Google Script Trigger-->
+    <script src="trigger.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <h1>&nbsp;</h1>
+    </div><!--row-->
+    <!--Title (Animated) and Signup-->
+    <div class="row">
+        <!--Title Animated-->
+        <div class="col-12 col-md-6">
+            <h1><span id="TitleSend">S</span><span id="TitleMy">M</span><span id="TitleSelf">S</span><span id="TitleJ">J</span>ournal</h1>
+        </div>
+        <!--Signup Form-->
+        <div class="col-12 col-md-6">
+            <div class="card h-100" id="signupArea">
+              <h4 class="card-header">Get SMSJournal Today!</h4>
+              <div class="card-body">
+                <p>The premier instant message journaling service, just $1.49 per month.<p>
+                </div>
+                <div class="card-footer">
+                    <a onclick="beginSignup()" class="btn btn-primary cardButton">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div><!--row-->
+    <br>
+    <hr> <!--section break with line-->
+    <br>
+    <!--How it works Animation-->
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h1><span class="first-letter-title">J</span>ournal On Your Phone</h1>
+            <div class="shrink-phone">
+                <div class="marvel-device iphone8 black">
+                    <div class="top-bar"></div>
+                    <div class="sleep"></div>
+                    <div class="volume"></div>
+                    <div class="camera"></div>
+                    <div class="sensor"></div>
+                    <div class="speaker"></div>
+                    <div class="screen">
+                        <div id="SMSMessages"> <!--make scrollable-->
+                            <div class="message me">
+                                Send a message to see it appear in Google Docs.
+                            </div>
+                        </div>
+                        <input class="form-control" type="text" id="sendMessage" placeholder="Your message here...">
+                    </div>
+                    <div class="home"></div>
+                    <div class="bottom-bar"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <h1><span class="first-letter-title">E</span>dit In Google Docs</h1>
+        <form>
+            <div class='form-group'>
+                <textarea class="form-control" id="gDoc" rows="18">
+                </textarea>
+            </div>
+        </form>
+    </div>
+    </div><!--row-->
+    <br>
+    <hr> <!--section break with line-->
+    <br>
+    <!--Why Journal-->
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h1><span class="first-letter-title">W</span>hy Journal?</h1>
+            <h3>Three writers weigh in on the benefits of keeping a daily journal.</h3>
+        </div>
+    </div><!--row-->
+    <div class="row">
+        <div class="col-12 col-md-4 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">Forbes</h4>
+            <div class="card-body">
+              <p class="card-text">Noma Nazish outlines the benefits of journaling for clearing your mind, self-improvement, reducing stress, improving your memory, and facilitating healing.</p>
+            </div>
+            <div class="card-footer">
+              <a href="https://www.forbes.com/sites/nomanazish/2017/12/29/five-legit-reasons-to-keep-a-journal-in-2018/#34a5085955e1" class="btn btn-primary cardButton">Read</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">The Art of Manliness</h4>
+            <div class="card-body">
+              <p class="card-text">Brett &amp; Kate McKay explain the daily journal as a historical tool and artifact. They help you create a journaling practice to share with your decendants.</p>
+            </div>
+            <div class="card-footer">
+              <a href="https://www.artofmanliness.com/articles/30-days-to-a-better-man-day-8-start-a-journal/" class="btn btn-primary cardButton">Read</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">Mission</h4>
+            <div class="card-body">
+              <p class="card-text">Benjamin Hardy reveals the importance of journaling to his success and provides encouragement and instruction in how to journal effectively.</p>
+            </div>
+            <div class="card-footer">
+              <a href="https://medium.com/the-mission/why-keeping-a-daily-journal-could-change-your-life-9a4c11f1a475" class="btn btn-primary cardButton">Read</a>
+            </div>
+          </div>
+        </div>
+    </div><!--row-->
+    <br>
+    <hr> <!--section break with line-->
+    <br>
+    <!--Features-->
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h1><span class="first-letter-title">F</span>eatures</h1>
+        </div>
+    </div><!--row-->
+    <div class="row">
+        <div class="col-12 col-md-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">Unlimited Journaling</h4>
+            <div class="card-body">
+              <p class="card-text">With a simple @tag, an message goes into a seperate journal. Each message can have an unlimited tags, and if a tag is used for the first time SMSJ automatically creates a new journal. An untagged message is posted in your default journal.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">Integrate Everywhere</h4>
+            <div class="card-body">
+              <p class="card-text">SMSJournal works on anything that can send a text message, from a flip phone to an flagship smartphone. Use Siri, Alexa, and more to journal by voice.</p>
+            </div>
+          </div>
+        </div>
+    </div><!--row-->
+    <div class="row">
+        <div class="col-12 col-md-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">Secure and Private</h4>
+            <div class="card-body">
+              <p class="card-text">Every message is sent directly from your phone to Google Docs by an encrypted AWS Lambda function. We do not read or log your messages, and the bits of personal data we collect to provide the service are stored in a secure AWS database.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">More Coming Soon</h4>
+            <div class="card-body">
+              <p class="card-text">More features and integrations coming soon! Contact us if there is something you want to see.</p>
+            </div>
+          </div>
+        </div>
+    </div><!--row-->
+    <br>
+    <hr> <!--section break with line-->
+    <br>
+    <!--Open Source-->
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h1><span class="first-letter-title">O</span>pen Source</h1>
+        </div>
+    </div><!--row-->
+    <div class="row">
+        <div class="col-12 col-md-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">See the Code</h4>
+            <div class="card-body">
+              <p class="card-text">100% of the SMSJournal code, from this website to the backend systems, are open source under the Apache 2.0 License. Thus, our security and privacy claims are independently verified. You also have the option of setting up and hosting your own version of the service.</p>
+            </div>
+            <div class="card-footer">
+              <a href="https://github.com/philipkiely/SMSJournal" class="btn btn-primary cardButton">Get The Code</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header">See the Idea</h4>
+            <div class="card-body">
+              <p class="card-text">Read the original design concept whitepaper behind SMSJournal. While the paper does not reflect the final product, it was the first idea for how to implement and create SMSJournal. Plus, it has some fun diagrams!</p>
+            </div>
+            <div class="card-footer">
+              <a href="/SMSJournalWhitepaper.pdf" class="btn btn-primary cardButton">Read The Paper</a>
+            </div>
+          </div>
+        </div>
+    </div><!--row-->
+    <br>
+    <hr> <!--section break with line-->
+    <br>
+    <!--Contact-->
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h1><span class="first-letter-title">C</span>ontact</h1>
+        </div>
+    </div><!--row-->
+    <div class="row text-center">
+        <div class="col-2 offset-3">
+            <h4>Email</h4>
+          <a class="cardButtonContact" href="mailto:info@grammiegram.com">
+            <i class="fa fa-envelope fa-3x"></i>
+          </a>
+        </div>
+        <div class="col-2">
+            <h4>Facebook</h4>
+          <a class="cardButtonContact" href="https://www.facebook.com/grinnellsfastestgrowingtechnologycompany/">
+            <i class="fa fa-facebook fa-3x"></i>
+          </a>
+        </div>
+        <div class="col-2">
+            <h4>Twitter</h4>
+          <a class="cardButtonContact" href="https://twitter.com/grinnellfastest">
+            <i class="fa fa-twitter fa-3x"></i>
+          </a>
+        </div>
+    </div><!--row-->
+    <br>
+    <hr> <!--section break with line-->
+    <br>
+</div><!--container-->
+<!--Footer-->
+{% include 'footer.html' %}
+<script src="script.js"></script>
+<script>
+var handler = StripeCheckout.configure({
+  key: 'pk_test_sR3Hd5BgBbf0BaeYEJx1qtVU',
+  image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+  locale: 'auto',
+  token: function(token) {
+    // You can access the token ID with `token.id`.
+    // Get the token ID to your server-side code for use.
+  }
+});
+
+function PayWithStripe() {
+  // Open Checkout with further options:
+  handler.open({
+    name: 'GrammieGram LLC',
+    description: 'SMSJournal 1-year subscription',
+    amount: 1788
+  });
+}
+
+// Close Checkout on page navigation:
+window.addEventListener('popstate', function() {
+  handler.close();
+});
+</script>
+</body>
+</html>
