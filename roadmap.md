@@ -18,7 +18,7 @@ ALL SITE TASKS MUST INCLUDE UNIT TESTS WHEREVER POSSIBLE
 * DONE | PK | Project Setup
 * DONE | PK | Copy over static assets
 * AM | Signup/Signin with a google account
-* get phone number and verification
+* Kuku | get phone number and verification
 * get payment from stripe
 * Change user's information
 
