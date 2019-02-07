@@ -18,13 +18,16 @@ ALL SITE TASKS MUST INCLUDE UNIT TESTS WHEREVER POSSIBLE
 * DONE | PK | Project Setup
 * DONE | PK | Copy over static assets
 * AM | Signup/Signin with a google account
-* Kuku | get phone number and verification
+* AB | get phone number and verification
+* PK | [Journal Model, API to add journal, API to get journal by name]
+* Test Journals App [3 actions above]
+* Add journal update to user phone number change (task below)
 * get payment from stripe
 * Change user's information
 
-##### Django Site | API
 
-ALL SITE API TASKS MUST INCLUDE UNIT TESTS WHEREVER POSSIBLE
+#### Business
 
-* get journal id with phone number and lowercase journal name.
-* Add new journal to user
+* FAQ
+    * Can I move files between folders? Yes
+    * Can I change X info? Yes, here is the field
