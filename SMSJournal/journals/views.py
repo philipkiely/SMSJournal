@@ -23,10 +23,10 @@ def api_root(request):
 #url /journals/api/create_journal
 @define_usage(params={"name": "String", "id": "String", "phone_number": "Integer", "api_key": "String"},
               returns={"journal_info": "Dict"})
-@api_view(["POST"]) #PUT?
+@api_view(["POST"])
 @permission_classes((AllowAny,))
 def api_create_journal(request):
-    if request.api_key != "test_key": #will be env variable in settings
+    if request.data["api_key"] != "test_key": #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
     journal = JournalSerializer(data={"name": request.data["name"],
                                       "id": request.data["id"],
@@ -35,16 +35,16 @@ def api_create_journal(request):
         journal.save()
         return Response({"Created": True})
     else:
-        return Response({"Created": False})
+        return Response({"Error": "Journal Not Created"})
 
 
-#url /journals/api/create_journal
+#url /journals/api/get_journal
 @define_usage(params={"name": "String", "phone_number": "Integer", "api_key": "String"},
               returns={"journal_info": "Dict"})
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def api_get_journal(request):
-    if request.api_key != "test_key": #will be env variable in settings
+    if request.data["api_key"] != "test_key": #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
     try:
         journal = Journal.objects.get(phone_number=request.data["phone_number"]).get(name=request.data["name"].lower())
