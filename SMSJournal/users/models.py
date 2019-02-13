@@ -5,23 +5,17 @@ import settings
 import boto3
 
 
-'''
-Model of a user. 
-Phone: phone number of a user. Format: +1xxxxxxxxxx
-Verif_code: code sent from us to user's phone to
-verify phone number
-Phone_verified: boolean, self-explanatory
-'''
+# Model of a user.
+# Phone: phone number of a user. Format: +1xxxxxxxxxx
+# Verif_code: code sent from us to user's phone to verify phone number
+# Phone_verified: boolean, self-explanatory
 class Subscriber(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=13, required = False)
-    verif_code = models.BigIntegerField()
+    phone = models.CharField(max_length=150, required=False)
+    verif_code = models.IntegerField()
     phone_verified = models.BooleanField(default=False)
 
-
-    '''
-    Send 6 digit code to the user for verification
-    '''
+    # Send 6 digit code to the user for verification
     def send_code(self):
         client = boto3.client('pinpoint')
         pinpoint_id = settings.AWS_PINPOINT_PROJECT_ID
