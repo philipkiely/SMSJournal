@@ -6,6 +6,7 @@ from core.decorators import define_usage
 from .models import Journal, process_journal_name
 from core.models import Metrics
 from .serializers import JournalSerializer
+from django.conf import settings
 
 
 #url /journals/api/
@@ -27,7 +28,7 @@ def api_root(request):
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def api_create_journal(request):
-    if request.data["api_key"] != "test_key": #will be env variable in settings
+    if request.data["api_key"] != settings.API_KEY: #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
     journal = JournalSerializer(data={"name": process_journal_name(request.data["name"]),
                                       "id": request.data["id"],
@@ -45,7 +46,7 @@ def api_create_journal(request):
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def api_get_journal(request):
-    if request.data["api_key"] != "test_key": #will be env variable in settings
+    if request.data["api_key"] != settings.API_KEY: #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
     met = Metrics.objects.get(current=True)
     met.log_journal_entry()

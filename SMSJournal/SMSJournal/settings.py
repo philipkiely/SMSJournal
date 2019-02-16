@@ -25,6 +25,8 @@ SECRET_KEY = str(os.environ['SMSJOURNAL_SECRET_KEY'])
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ['SMSJOURNAL_DEBUG_INT']
 
+API_KEY = os.environ['API_KEY']
+
 
 AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
 ALLOWED_HOSTS = []
