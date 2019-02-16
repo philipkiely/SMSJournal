@@ -34,8 +34,6 @@ def api_create_journal(request):
                                       "phone_number": request.data["phone_number"]})
     if journal.is_valid():
         journal.save()
-        met = Metrics.objects.get(current=True)
-        met.log_journal_entry()
         return Response({"Created": True})
     else:
         return Response({"Error": "Journal Not Created"})
@@ -49,13 +47,13 @@ def api_create_journal(request):
 def api_get_journal(request):
     if request.data["api_key"] != "test_key": #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
+    met = Metrics.objects.get(current=True)
+    met.log_journal_entry()
     try:
         journal = Journal.objects.get(phone_number=request.data["phone_number"]).get(name=process_journal_name(request.data["name"]))
     except:
         return Response({"Error": "Journal with phone number not found"})
     try:
-        met = Metrics.objects.get(current=True)
-        met.log_journal_entry()
         return Response({"id": journal.id}) #Return Journal ID for use in docs URL
     except:
         return Response({"Error": "Journal with name not found"})
