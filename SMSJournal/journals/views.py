@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.reverse import reverse
 from core.decorators import define_usage
 from .models import Journal, process_journal_name
+from core.models import Metrics
 from .serializers import JournalSerializer
 
 
@@ -33,6 +34,8 @@ def api_create_journal(request):
                                       "phone_number": request.data["phone_number"]})
     if journal.is_valid():
         journal.save()
+        met = Metrics.objects.get(current=True)
+        met.log_journal_entry()
         return Response({"Created": True})
     else:
         return Response({"Error": "Journal Not Created"})
@@ -51,6 +54,8 @@ def api_get_journal(request):
     except:
         return Response({"Error": "Journal with phone number not found"})
     try:
+        met = Metrics.objects.get(current=True)
+        met.log_journal_entry()
         return Response({"id": journal.id}) #Return Journal ID for use in docs URL
     except:
         return Response({"Error": "Journal with name not found"})

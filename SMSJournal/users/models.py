@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import random
-import settings
+from django.conf import settings
 import boto3
 
 
@@ -11,7 +11,7 @@ import boto3
 # Phone_verified: boolean, self-explanatory
 class Subscriber(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=150, required=False)
+    phone = models.CharField(max_length=150)
     verif_code = models.IntegerField()
     phone_verified = models.BooleanField(default=False)
 

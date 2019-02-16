@@ -124,6 +124,13 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Email information
+EMAIL_USE_SSL = False
+EMAIL_HOST = "mail.hover.com"
+EMAIL_HOST_USER = "info@grammiegram.com"
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASS"]
+EMAIL_PORT = 587
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
