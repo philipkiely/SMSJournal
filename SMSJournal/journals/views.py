@@ -22,7 +22,7 @@ def api_root(request):
 
 
 #url /journals/api/create_journal
-@define_usage(params={"name": "String", "id": "String", "phone_number": "Integer", "api_key": "String"},
+@define_usage(params={"name": "String", "id": "String", "phone_number": "String", "api_key": "String"},
               returns={"journal_info": "Dict"})
 @api_view(["POST"])
 @permission_classes((AllowAny,))
@@ -42,7 +42,7 @@ def api_create_journal(request):
 
 
 #url /journals/api/get_journal
-@define_usage(params={"name": "String", "phone_number": "Integer", "api_key": "String"},
+@define_usage(params={"name": "String", "phone_number": "String", "api_key": "String"},
               returns={"journal_info": "Dict"})
 @api_view(["POST"])
 @permission_classes((AllowAny,))
