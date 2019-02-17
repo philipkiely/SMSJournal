@@ -2,6 +2,8 @@
 
 To set up an SMSJournal dev environment, create a virtual environment, activate it, then run  `pip install -r requirements.txt`.
 
+If you plan on deploying to AWS from this dev environment, run `pip install awscli` to get the AWS CLI tool.
+
 Next, set the environment variables described in "settings.md". It may be convienent to set these variables in the activation script for your
 virtual environment so that they aren't set when you aren't working on SMSJournal. This process is also described (briefly) in "settings.md".
 
