@@ -8,7 +8,7 @@
 * Activate Google App Script
 
 #### Google App Script
-* Use POST request
+* DONE | PK | Use POST request
 * Get published for use with any account
 
 #### Django Site
