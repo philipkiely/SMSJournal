@@ -9,6 +9,9 @@
 
 #### Google App Script
 * DONE | PK | Use POST request
+* DONE | PK | Make post request to API after new journal
+* Set environment variable for API api_key
+* Implement login for any account
 * Get published for use with any account
 
 #### Django Site

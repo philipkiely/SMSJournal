@@ -7,19 +7,29 @@ function addEntry(doc, text) {
   body.insertParagraph(0, recorded);
 }
 
-function createJournal(name, text) {
+function createJournal(name, text, phone) {
   var doc = DocumentApp.create(name); //create new journal with name
   addEntry(doc, text); //write associated entry
-  //API call
+  var data = {
+    'name': name,
+    'id': doc.getId(),
+    'phone_number': phone,
+    'api_key': "test_key"
+  };
+  var options = {
+    'method' : 'post',
+    'payload' : data
+  };
+  UrlFetchApp.fetch('https://smsjournal.xyz/journals/api/create_journal/', options);
 }
 
-function process(tags, message) {
+function process(tags, message, phone) {
   tags.forEach (function (tag) {
       try {
         var doc = DocumentApp.openById(tag); //will fail if tag is not a document ID, expected behavior
         addEntry(doc, message);
       } catch(e) {
-        createJournal(tag, message); //in the event of a failure, create a new journal
+        createJournal(tag, message, phone); //in the event of a failure, create a new journal
       }
    });
 }
@@ -27,6 +37,7 @@ function process(tags, message) {
 function doPost(e) {
   //login
   tags = String(e["parameters"]["ids"]).split(","); //parse journals
-  message = e["parameters"]["message"]
-  process(tags, message);
+  message = e["parameters"]["message"];
+  phone = e["parameters"]["phone"];
+  process(tags, message, phone);
 }
