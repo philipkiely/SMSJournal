@@ -1,3 +1,5 @@
+//CURRENTLY DEPRECATED IN FAVOR OF GOOGLE DOCS API CALLS
+
 function addEntry(doc, text) {
   var body = doc.getBody();
   body.insertParagraph(0, text+"\n\n");
