@@ -14,6 +14,7 @@ class Subscriber(models.Model):
     phone = models.CharField(max_length=150)
     verif_code = models.IntegerField()
     phone_verified = models.BooleanField(default=False)
+    #ToDo: Timezone
 
     # Send 6 digit code to the user for verification
     def send_code(self):
