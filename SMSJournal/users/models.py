@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import random
 from django.conf import settings
 import boto3
+from django.utils import timezone
 
 
 # Model of a user.
@@ -14,6 +15,9 @@ class Subscriber(models.Model):
     phone = models.CharField(max_length=150)
     verif_code = models.IntegerField()
     phone_verified = models.BooleanField(default=False)
+    active = models.BooleanField(default=False) #Is the subscription active?
+    total_entries = models.IntegerField(default=0)
+    last_entry = models.DateTimeField(default=timezone.now)
     #ToDo: Timezone
 
     # Send 6 digit code to the user for verification
@@ -40,3 +44,6 @@ class Subscriber(models.Model):
                 }
             }
         )
+
+    def __str__(self):
+        return self.user.username
