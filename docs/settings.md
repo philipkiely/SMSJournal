@@ -7,8 +7,12 @@ SMSJournal uses environment variables to control the settings. The variables are
 * SMSJOURNAL_DB_NAME="db_name"
 * SMSJOURNAL_DB_USER="db_user" (default: postgres)
 * SMSJOURNAL_DB_PASS="db_pass" (default: postgres)
+* SMSJOURNAL_OAUTH2_KEY="Google OAuth ClientId"
+* SMSJOURNAL_OAUTH2_SECRET="Google OAuth ClientSecret"
 * EMAIL_PASS=the info@grammiegram.com email password
 * API_KEY=the api key, same as Lambda and App Script # TODO test and prod api keys
+
+For information about what you need for OAuth2 with Google, [read this.](https://developers.google.com/identity/protocols/OAuth2?csw=1)
 
 If you plan on deploying to AWS from your dev environment, you'll need these additional environment variables:
 
