@@ -3,13 +3,9 @@
 ### TODO: v1.0 Release
 
 #### AWS Lambda SMS Handler
-* Integrate with Django Site API
-* test message parsing
-* Activate Google App Script
-
-#### Google App Script
-* Use POST request
-* Get published for use with any account
+* PK | Integrate with Django Site API
+* DONE | PK | test message parsing
+* 24-hour timed analytics trigger
 
 #### Django Site
 
@@ -31,3 +27,4 @@ ALL SITE TASKS MUST INCLUDE UNIT TESTS WHEREVER POSSIBLE
 * FAQ
     * Can I move files between folders? Yes
     * Can I change X info? Yes, here is the field
+* Finish frontend
