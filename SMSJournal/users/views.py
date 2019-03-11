@@ -16,19 +16,19 @@ def account_main(request):
             return render(request, 'account_main.html')
         else: #registration is not complete
             if request.method == "POST":
-                form = PhoneNumberForm(request.user, request.POST)
+                form = PhoneNumberForm(request.POST, user=request.user)
                 #Process and verify
                 return render(request, 'account_main.html')
             else:
-                form = PhoneNumberForm()
+                form = PhoneNumberForm(user=request.user)
                 return render(request, 'account_create.html')
     except:
         if request.method == "POST":
-            form = PhoneNumberForm(request.user, request.POST)
+            form = PhoneNumberForm(request.POST, user=request.user)
             #Process and verify
             return render(request, 'account_main.html')
         else:
-            form = PhoneNumberForm()
+            form = PhoneNumberForm(user=request.user)
             return render(request, 'account_create.html')
 
 
