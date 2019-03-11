@@ -18,8 +18,12 @@ ALL SITE TASKS MUST INCLUDE UNIT TESTS WHEREVER POSSIBLE
 * PK | [Journal Model, API to add journal, API to get journal by name]
 * Test Journals App [3 actions above]
 * Add journal update to user phone number change (task below)
+* /account/ page with:
+    * Post an entry directly
+    * change phone number with verification
+    * change stripe
+    * cancel subscription (refund policy? 30-day cancellation?)
 * get payment from stripe
-* Change user's information
 
 
 #### Business

@@ -4,6 +4,32 @@ import os
 from django.conf import settings
 from django.shortcuts import redirect
 from .models import Subscriber
+from .forms import PhoneNumberForm
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def account_main(request):
+    try: #User is a registered subscriber
+        sub = request.user.subscriber
+        if sub.active:
+            return render(request, 'account_main.html')
+        else: #registration is not complete
+            if request.method == "POST":
+                form = PhoneNumberForm(request.user, request.POST)
+                #Process and verify
+                return render(request, 'account_main.html')
+            else:
+                form = PhoneNumberForm()
+                return render(request, 'account_create.html')
+    except:
+        if request.method == "POST":
+            form = PhoneNumberForm(request.user, request.POST)
+            #Process and verify
+            return render(request, 'account_main.html')
+        else:
+            form = PhoneNumberForm()
+            return render(request, 'account_create.html')
 
 
 

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+    <!--CSS sheet for iPhone-->
+    <link rel="stylesheet" href="/static/devices.min.css" type="text/css">
+    <!--Icons-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--stripe-->
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <!--Google API Client Library-->
+    <script src="https://apis.google.com/js/client.js"></script>
+</head>
+<div class="container">
+    <div class="row">
+        <p>This page shows when a user without an active account logs in.</p>
+        <p>This page do two things</p>
+        <ul>
+            <li>Get and Verify phone number</li>
+            <li>Get payment</li>
+        </ul>
+        <p>Then redirect to main page</p>
+    </div>
+</div>
