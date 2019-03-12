@@ -1,7 +1,8 @@
 //Google Docs Init
 //document.getElementById('gDoc').appendChild('p')
 //="<b>1/1/2000 12:00 AM</b>";
-
+// get rid of that, it should be the users phone
+window.verifiedPhone = "6418880132";
 function SMSJTitle(){
     //Uses a typewriter effect to expand the header text
     var texts = ['Send ', 'My', 'Self ', 'J'];
@@ -46,8 +47,10 @@ function beginSignup() {
 
 function verifyNumber() {
     phoneNumber = document.getElementById("phoneNumber").value.match(/\d+/g).join(""); //get all numbers regardless of formatting
+
     phoneNumberConfirm = document.getElementById("phoneNumberConfirm").value.match(/\d+/g).join("");
     if ((phoneNumber == phoneNumberConfirm) && (phoneNumber.length == 10)) {
+        verifiedPhone = phoneNumber;
         return true;
     }
     else if (phoneNumber.length == 10) {

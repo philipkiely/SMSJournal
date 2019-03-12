@@ -160,3 +160,7 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SMSJOURNAL_OAUTH2_KEY']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SMSJOURNAL_OAUTH2_SECRET']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/documents']
+# stripe, make this env. vars and these are test keys
+STRIPE_SECRET_KEY = 'sk_test_TA0OWpegg9C3ClZen5Y0LZpW'
+STRIPE_PUBLISHABLE_KEY = 'pk_test_sR3Hd5BgBbf0BaeYEJx1qtVU'
+STRIPE_PLAN_ID = "plan_Ee1YfbK0DJQdqR"

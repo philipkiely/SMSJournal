@@ -14,6 +14,8 @@
     <script src="/static/auth.js"></script>
     <!--Google Script Trigger-->
     <script src="/static/trigger.js"></script>
+    <!--jQuery for ajax-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -36,6 +38,46 @@
                 <div class="card-footer">
                     <a onclick="beginSignup()" class="btn btn-primary cardButton">Get Started</a>
                 </div>
+                  <script>src="https://checkout.stripe.com/checkout.js"</script>
+                  <button id="customButton">Add card</button>
+                  <script>
+                    var handler = StripeCheckout.configure({
+                      key: '{{stripe_key}}',
+                      image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+                      locale: 'auto',
+                      token: function(tkn) {
+                        console.log("Token: " + tkn.id);
+                        console.log("phone "+ verifiedPhone);
+                        // do clean in here if the card is not correct
+                        $.ajax({
+                              type: 'POST',
+                              url: "{%url 'first_charge' %}",
+                              data: {"stripeToken":token,"phone":verifiedPhone},
+                              dataType: "json",
+                              success: function(resultData) { alert("Save Complete") }
+                        });
+                      }
+                    });
+                    
+                    document.getElementById('customButton').addEventListener('click', function(e) {
+                      console.log("button");
+                      // Open Checkout with further options:
+                      handler.open({
+                        name: 'SMS journal',
+                        description: 'Subscribe',
+                        amount: 149
+                      });
+                      e.preventDefault();
+                    });
+                    
+                    // Close Checkout on page navigation:
+                    window.addEventListener('popstate', function() {
+                      console.log("pop state");
+                      handler.close();
+                    });
+                    </script>
+
+
             </div>
         </div>
     </div><!--row-->
@@ -236,30 +278,6 @@
 <!--Footer-->
 {% include 'footer.html' %}
 <script src="/static/script.js"></script>
-<script>
-var handler = StripeCheckout.configure({
-  key: 'pk_test_sR3Hd5BgBbf0BaeYEJx1qtVU',
-  image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-  locale: 'auto',
-  token: function(token) {
-    // You can access the token ID with `token.id`.
-    // Get the token ID to your server-side code for use.
-  }
-});
 
-function PayWithStripe() {
-  // Open Checkout with further options:
-  handler.open({
-    name: 'GrammieGram LLC',
-    description: 'SMSJournal 1-year subscription',
-    amount: 1788
-  });
-}
-
-// Close Checkout on page navigation:
-window.addEventListener('popstate', function() {
-  handler.close();
-});
-</script>
 </body>
 </html>

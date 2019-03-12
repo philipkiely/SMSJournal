@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .models import Metrics, daily_metrics
+from .models import Metrics, daily_metrics, Subscriber
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from core.decorators import define_usage
 from django.conf import settings
-
+import stripe
+from django.http import HttpResponse
 # Basic Renders
 
 
@@ -16,7 +17,7 @@ def index(request):
         met.log_main_page_visit()
     except:
         pass
-    return render(request, 'index.html')
+    return render(request, 'index.html',{"stripe_key":settings.STRIPE_PUBLISHABLE_KEY})
 
 
 # url /terms
@@ -46,3 +47,16 @@ def api_daily_metrics(request):
         return Response({"Result": "API Key Incorrect"})
     daily_metrics()
     return Response({"Result": "Done"})
+
+
+# url / first_charge
+def first_charge(request): 
+    if request.method == 'POST':
+        usr = User(username="test1", password="test1")
+        token = request.POST['stripeToken']
+        #user = Subscriber.objects.get(phone=request.POST["phone"])
+        sub = Subscriber(user=usr,phone=request.POST["phone"], )
+        user.subscribe(token)
+
+    print("Person was charged first charge")
+    return render(request, 'success.html')
