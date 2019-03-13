@@ -13,12 +13,12 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 class Subscriber(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=150)
-    verif_code = models.IntegerField()
+    verif_code = models.IntegerField(blank=True,null=True)
     phone_verified = models.BooleanField(default=False)
     active = models.BooleanField(default=False) #Is the subscription active?
     total_entries = models.IntegerField(default=0)
     last_entry = models.DateTimeField(default=timezone.now)
-    #ToDo: Timezone
+    stripe_customer_id = models.CharField( max_length = 150, blank = True, null=True)
 
     # Send 6 digit code to the user for verification
     def send_code(self):
@@ -51,23 +51,6 @@ class Subscriber(models.Model):
 
 
 
-    '''
-    stripe.Product.create(
-    name='Weekly Car Wash Service',
-    type='service',
-    )
-    first, create our product for sms journal: one time thing
-    stripe.Plan.create(
-    nickname="Standard Monthly",
-    product="{{CAR_WASH_PRODUCT_ID}}",
-    amount=2000,
-    currency="usd",
-    interval="month",
-    usage_type="licensed",
-    ) then create the plan, one time thing
-
-    '''
-
 
     def subscribe(self, token):
         customer = stripe.Customer.create(
@@ -75,8 +58,6 @@ class Subscriber(models.Model):
         description=self.phone
         )
         self.stripe_customer_id = customer.id
-
-        # subscribe customer to our thing
         stripe.Subscription.create(
             customer=customer.id,
             items=[
@@ -87,23 +68,17 @@ class Subscriber(models.Model):
             ]
         )
 
-        # charge the first time
-        charge = stripe.Charge.create(
-        amount=149, # $15.00 this time
-        currency='usd',
-        description='SMS Journal Charge',
-        customer=customer.id, # Previously stored, then retrieved
-        )
 
 
 
-    def delete_subscription(self):
-        # string is subscription_id
-        subscription = stripe.Subscription.retrieve('sub_49ty4767H20z6a')
-        subscription.delete()
+    def delete_customer(self):
+        cust = stripe.Customer.retrieve(self.stripe_customer_id)
+        cust.delete()
 
-    def change_card(self):
-        # do the front-end pop up, it will store the card and then do that
-        stripe.Customer.modify('cus_V9T7vofUbZMqpv',
-        source='tok_visa',
-        )
+
+    def change_card(self, new_token):
+        stripe.Customer.modify(self.stripe_customer_id,
+        source=new_token)
+
+    def give_discount(self, percent):
+        stripe.Customer.modify(self.stripe_customer_id, coupon = "small_discount" )

@@ -7,6 +7,7 @@ from core.decorators import define_usage
 from django.conf import settings
 import stripe
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 # Basic Renders
 
 
@@ -17,7 +18,7 @@ def index(request):
         met.log_main_page_visit()
     except:
         pass
-    return render(request, 'index.html',{"stripe_key":settings.STRIPE_PUBLISHABLE_KEY})
+    return render(request, 'index.html')
 
 
 # url /terms
@@ -50,13 +51,18 @@ def api_daily_metrics(request):
 
 
 # url / first_charge
+@define_usage(params={"stripeToken": "String"},
+              returns={"Result": "String"})
+@api_view(["POST"])
+@permission_classes((AllowAny,))
 def first_charge(request): 
-    if request.method == 'POST':
-        usr = User(username="test1", password="test1")
-        token = request.POST['stripeToken']
-        #user = Subscriber.objects.get(phone=request.POST["phone"])
-        sub = Subscriber(user=usr,phone=request.POST["phone"], )
-        user.subscribe(token)
+    token = request.data['stripeToken']
+    print("received tocken:" + token)
+    sub = Subscriber.objects.get(phone=6418880132)
+    sub.subscribe(token)
 
     print("Person was charged first charge")
-    return render(request, 'success.html')
+    return Response({"Result": "Done"})
+
+def stripe_playground_remove_it(request):
+    return render(request, 'stripe_playground.html',{"stripe_key":settings.STRIPE_PUBLISHABLE_KEY})
