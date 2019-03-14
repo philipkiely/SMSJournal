@@ -18,7 +18,7 @@ class Subscriber(models.Model):
     active = models.BooleanField(default=False) #Is the subscription active?
     total_entries = models.IntegerField(default=0)
     last_entry = models.DateTimeField(default=timezone.now)
-    stripe_customer_id = models.CharField( max_length = 150, blank = True, null=True)
+    stripe_customer_id = models.CharField(max_length = 150, blank = True, null=True)
 
     # Send 6 digit code to the user for verification
     def send_code(self):
@@ -54,10 +54,12 @@ class Subscriber(models.Model):
 
     def subscribe(self, token):
         customer = stripe.Customer.create(
-        source=token, #seems that's just a way to refer to payment method
+        source=token,
         description=self.phone
         )
+        print(customer.id)
         self.stripe_customer_id = customer.id
+        self.save()
         stripe.Subscription.create(
             customer=customer.id,
             items=[
@@ -74,7 +76,6 @@ class Subscriber(models.Model):
     def delete_customer(self):
         cust = stripe.Customer.retrieve(self.stripe_customer_id)
         cust.delete()
-
 
     def change_card(self, new_token):
         stripe.Customer.modify(self.stripe_customer_id,

@@ -14,14 +14,14 @@
 </head>
 <div class="container">
     <div class="row">
-        <p>This page shows when a user without an active account logs in.</p>
-        <p>This page do two things</p>
+        <p>This page shows when a subscriber with an active account logs in.</p>
+        <p>This page should let the subscriber do a few things:</p>
         <ul>
-            <li>Get and Verify phone number</li>
-            <li>Get payment</li> 
-
+            <li>one-click, one-field form to post a journal entry</li>
+            <li>change phone number with verification</li>
+            <li>change payment options</li>
             <script>src="https://checkout.stripe.com/checkout.js"</script>
-            <button id="customButton">Add card</button>
+            <button id="customButton">Change card</button>
             <script>
               var handler = StripeCheckout.configure({
                 key: '{{stripe_key}}',
@@ -32,10 +32,10 @@
                   // do clean in here if the card is not correct
                   $.ajax({
                         type: 'POST',
-                        url: "{%url 'first_charge' %}",
-                        data: {"stripeToken":tkn.id, "username":'{{username}}' },  // pass phone in here as well so that we can find user on server side 
+                        url: "{%url 'card_change' %}",
+                        data: {"stripeToken":tkn.id, "username": "{{username}}"},  // pass phone or id in here as well so that we can find user on server side 
                         dataType: "json",
-                        success: function(resultData) { alert("Save Complete") }
+                        success: function(resultData) { console.log("Card change Complete") }
                   });
                 }
               });
@@ -45,7 +45,7 @@
                 // Open Checkout with further options:
                 handler.open({
                   name: 'SMS journal',
-                  description: 'Subscribe',
+                  description: 'New payment method information',
                   amount: 149
                 });
                 e.preventDefault();
@@ -57,8 +57,23 @@
                 handler.close();
               });
               </script>
+
+            <li>delete account / cancel subscription </li>
+            <button id="unsubscribeButton">Delete account</button>
+            <script> 
+            document.getElementById("unsubscribeButton").addEventListener('click', function(e){
+                $("#unsubscribeButton").after('<h4>Your account will be permanently deleted. Are you sure?</h4> <form action="{% url "unsubscribe" %}"  method="post"> {% csrf_token %}<input type=hidden name="username"  value = "{{username}}"> <input type="submit" value="Confirm"> ');
+                /*document.getElementById("confirmUnsubscribe").addEventListener('click', function(e){
+                    $.ajax({
+                        type: 'POST',
+                        url: "{%url 'unsubscribe' %}",
+                        data: {"stripeToken":tkn.id}, "username":'{{username}}',  // pass phone or id in here as well so that we can find user on server side 
+                        dataType: "json",
+                        success: function(resultData) { console.log("Card change Complete") }
+                  });
+                });*/
+            });
+            </script>
         </ul>
-        <p>Then redirect to main page</p>
     </div>
 </div>
- 

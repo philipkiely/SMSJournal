@@ -8,5 +8,9 @@ urlpatterns = [
     path('license/', views.license, name='license'),
     path('api_daily_metrics/', views.api_daily_metrics, name='api_daily_metrics'),
     path('first_charge/', views.first_charge, name='first_charge'),
-    path('stripe/', views.stripe_playground_remove_it, name="stripe")
+    path('stripe_webhook/', views.stripe_web_hook, name='stripe_webhook'),
+    path('stripe/', views.stripe_playground_remove_it, name="stripe"),
+    path('stripe_account/', views.stripe_account_remove_it, name="stripe_account"),
+    path('stripe_change_card/', views.stripe_card_change, name="card_change"),
+    path('unsubscribe/', views.unsubscribe, name="unsubscribe"),
 ]
