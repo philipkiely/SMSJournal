@@ -4,6 +4,7 @@ from users.models import Subscriber
 import datetime
 #TODO: round down to midnight on both new and cutoff, Delorean??
 
+
 # Static Methods
 def init_daily_metrics():
     today = Metrics(current=True,
