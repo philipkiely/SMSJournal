@@ -31,8 +31,6 @@ API_KEY = os.environ['API_KEY']
 AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
 ALLOWED_HOSTS = []
 
-
-
 # Application definition
 
 INSTALLED_APPS = [
