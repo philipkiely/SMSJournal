@@ -12,7 +12,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 # Phone_verified: boolean, self-explanatory
 class Subscriber(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=150)
+    phone = models.CharField(max_length=150, unique=True)
     verif_code = models.IntegerField(blank=True,null=True)
     phone_verified = models.BooleanField(default=False)
     active = models.BooleanField(default=False) #Is the subscription active?
