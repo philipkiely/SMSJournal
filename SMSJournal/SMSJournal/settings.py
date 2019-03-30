@@ -23,9 +23,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = str(os.environ['SMSJOURNAL_SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ['SMSJOURNAL_DEBUG_INT']
+DEBUG = bool(int(os.environ['SMSJOURNAL_DEBUG_INT'])) # 1 in test, 0 in prod
 
+API_KEY = os.environ['API_KEY']
+GOOGLE_CREDENTIALS = os.environ['SMSJ_GOOGLE_CREDENTIALS']
+
+
+AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
 ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -37,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'journals.apps.JournalsConfig',
@@ -50,6 +57,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'SMSJournal.urls'
@@ -121,6 +133,13 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Email information
+EMAIL_USE_SSL = False
+EMAIL_HOST = "mail.hover.com"
+EMAIL_HOST_USER = "info@grammiegram.com"
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASS"]
+EMAIL_PORT = 587
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -136,3 +155,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated', )
 }
+
+# social_auth settings
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SMSJOURNAL_OAUTH2_KEY']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SMSJOURNAL_OAUTH2_SECRET']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/documents']
+LOGIN_URL = '/auth/login/google-oauth2'
+LOGIN_REDIRECT_URL = '/account/'
+LOGOUT_REDIRECT_URL = '/'

@@ -6,4 +6,5 @@ urlpatterns = [
     path('terms/', views.terms, name='terms'),
     path('privacy/', views.privacy, name='privacy'),
     path('license/', views.license, name='license'),
+    path('api_daily_metrics/', views.api_daily_metrics, name='api_daily_metrics'),
 ]
