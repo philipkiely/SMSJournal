@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = str(os.environ['SMSJOURNAL_SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ['SMSJOURNAL_DEBUG_INT']
+DEBUG = bool(int(os.environ['SMSJOURNAL_DEBUG_INT'])) # 1 in test, 0 in prod
 
 API_KEY = os.environ['API_KEY']
 GOOGLE_CREDENTIALS = os.environ['SMSJ_GOOGLE_CREDENTIALS']
