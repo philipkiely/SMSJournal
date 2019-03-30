@@ -66,7 +66,7 @@ def api_journal_entry(request):
         if os.path.exists(os.path.join(settings.BASE_DIR, 'token.pickle')):
             with open(os.path.join(settings.BASE_DIR, 'token.pickle'), 'rb') as token:
                 creds = pickle.load(token)
-        # If there are no (valid) credentials available, let the user log in.
+        # If there are no (valid) credentials available, let the user log in. ##RIGHT NOW JUST WRITES TO ONE ACCOUNT
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())

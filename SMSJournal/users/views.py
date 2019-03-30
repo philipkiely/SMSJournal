@@ -17,19 +17,22 @@ def account_main(request):
         else: #registration is not complete
             if request.method == "POST":
                 form = PhoneNumberForm(request.POST, user=request.user)
-                #Process and verify
+                #Process and verify PLUG IN BOGDANS STUFF HERE
                 return render(request, 'account_main.html')
             else:
                 form = PhoneNumberForm(user=request.user)
-                return render(request, 'account_create.html')
+                return render(request, 'account_create.html', {'form': form})
     except:
         if request.method == "POST":
             form = PhoneNumberForm(request.POST, user=request.user)
             #Process and verify
+            number = form.data["phone_number"]
+            new_subscriber = Subscriber(user=request.user, phone=number, verif_code=123456, active=True)
+            new_subscriber.save()
             return render(request, 'account_main.html')
         else:
             form = PhoneNumberForm(user=request.user)
-            return render(request, 'account_create.html')
+            return render(request, 'account_create.html', {'form': form})
 
 
 
