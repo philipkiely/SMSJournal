@@ -95,10 +95,10 @@ def unsubscribe(request):
         usr = User.objects.get(username=username)
         sub = Subscriber.objects.get(user=usr)
         sub.delete_customer()
-        sub.active = True
+        sub.active = False
         sub.save()
     except:
-        print("Weird")
+        pass
     return render(request, 'index.html')
 
 

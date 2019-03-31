@@ -22,7 +22,7 @@ function useStripe(token){
     handler.open({
       name: 'SMS journal',
       description: 'Subscribe',
-      amount: 149
+      amount: 17.88
     });
     e.preventDefault();
   });
