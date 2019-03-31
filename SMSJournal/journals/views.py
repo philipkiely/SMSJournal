@@ -13,6 +13,7 @@ from google.auth.transport.requests import Request
 import delorean
 import pickle
 import os
+from django.utils import timezone
 
 
 #HELPER METHODS
@@ -56,15 +57,23 @@ def api_root(request):
 def api_journal_entry(request):
     if request.data["api_key"] != settings.API_KEY: #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
-    met = Metrics.objects.get(current=True)
-    met.log_journal_entry()
+    try:
+        met = Metrics.objects.get(current=True)
+        met.log_journal_entry()
+    except:
+        pass #never fail user request because of a metrics error
+    try:
+        subscriber = Subscriber.objects.get(phone=request.data["phone"])
+        user_journals = subscriber.journal_set.all()
+    except:
+        return Response({"Error": "Subscriber with that phone number not found"})
     try:
         creds = None
         # The file token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        if os.path.exists(os.path.join(settings.BASE_DIR, 'token.pickle')):
-            with open(os.path.join(settings.BASE_DIR, 'token.pickle'), 'rb') as token:
+        if os.path.exists(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle')):
+            with open(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle'), 'rb') as token:
                 creds = pickle.load(token)
         # If there are no (valid) credentials available, let the user log in. ##RIGHT NOW JUST WRITES TO ONE ACCOUNT
         if not creds or not creds.valid:
@@ -80,7 +89,7 @@ def api_journal_entry(request):
                 os.remove(os.path.join(settings.BASE_DIR, 'credentials.json')) #END JANK
                 creds = flow.run_local_server()
             # Save the credentials for the next run
-            with open(os.path.join(settings.BASE_DIR, 'token.pickle'), 'wb') as token:
+            with open(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle'), 'wb') as token:
                 pickle.dump(creds, token)
         service = build('docs', 'v1', credentials=creds)
     except:
@@ -92,12 +101,6 @@ def api_journal_entry(request):
     if names == [""]:
         names = ["SMSJournal"]
     print(request.data["phone"])
-    try:
-        #user_journals = Subscriber.objects.get(phone_number=request.data["phone"]).journal_set.all()
-        subscriber = Subscriber.objects.get(id=1)
-        user_journals = subscriber.journal_set.all()
-    except:
-        return Response({"Error": "Subscriber with that phone number not found"})
     print("here")
     print(names)
     for name in names:
@@ -119,4 +122,7 @@ def api_journal_entry(request):
                               name=process_journal_name(name),
                               google_docs_id=doc["documentId"])
             journal.save()
+        subscriber.last_entry = timezone.now()
+        subscriber.total_entries = subscriber.total_entries + 1
+        subscriber.save()
         return Response({})
