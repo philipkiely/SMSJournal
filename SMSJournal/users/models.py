@@ -57,7 +57,6 @@ class Subscriber(models.Model):
         source=token,
         description=self.phone
         )
-        print(customer.id)
         self.stripe_customer_id = customer.id
         self.save()
         stripe.Subscription.create(

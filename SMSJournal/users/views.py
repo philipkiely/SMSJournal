@@ -46,7 +46,6 @@ code ==null => verified, otherwise no
 '''
 
 
-
 def check_code(request):
     usr_id = request.POST.get('usr_id')
     subscriber_usr = User.objects.get(username=usr_id)

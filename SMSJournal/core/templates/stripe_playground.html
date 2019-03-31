@@ -10,7 +10,12 @@
     <script src="https://checkout.stripe.com/checkout.js"></script>
     <!--Google API Client Library-->
     <script src="https://apis.google.com/js/client.js"></script>
+    <!--Jquery for ajax-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--Stripe-->
+    <!--TWO LINES BELOW -->
+    <script src="/static/stripe_signup.js"> </script>
+    <script src="https://checkout.stripe.com/checkout.js"> </script>
 </head>
 <div class="container">
     <div class="row">
@@ -19,44 +24,11 @@
         <ul>
             <li>Get and Verify phone number</li>
             <li>Get payment</li> 
-
-            <script>src="https://checkout.stripe.com/checkout.js"</script>
+            <!--4 LINES BELOW-->
             <button id="customButton">Add card</button>
             <script>
-              var handler = StripeCheckout.configure({
-                key: '{{stripe_key}}',
-                image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-                locale: 'auto',
-                token: function(tkn) {
-                  console.log("Token: " + tkn.id);
-                  // do clean in here if the card is not correct
-                  $.ajax({
-                        type: 'POST',
-                        url: "{%url 'first_charge' %}",
-                        data: {"stripeToken":tkn.id, "username":'{{username}}' },  // pass phone in here as well so that we can find user on server side 
-                        dataType: "json",
-                        success: function(resultData) { alert("Save Complete") }
-                  });
-                }
-              });
-              
-              document.getElementById('customButton').addEventListener('click', function(e) {
-                console.log("button");
-                // Open Checkout with further options:
-                handler.open({
-                  name: 'SMS journal',
-                  description: 'Subscribe',
-                  amount: 149
-                });
-                e.preventDefault();
-              });
-              
-              // Close Checkout on page navigation:
-              window.addEventListener('popstate', function() {
-                console.log("pop state");
-                handler.close();
-              });
-              </script>
+            var url_signup = "{%url 'signup_and_charge' %}";var username = "{{username}}";$(window).on("load",function(){useStripe('{{stripe_key}}')});
+            </script>
         </ul>
         <p>Then redirect to main page</p>
     </div>
