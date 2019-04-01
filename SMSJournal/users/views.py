@@ -1,40 +1,67 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 import os
 from django.conf import settings
 from django.shortcuts import redirect
 from .models import Subscriber
-from .forms import PhoneNumberForm
+from .forms import PhoneNumberForm, PhoneNumberVerifyForm
 from django.contrib.auth.decorators import login_required
 
 
+#url /account
 @login_required
 def account_main(request):
     try: #User is a registered subscriber
         sub = request.user.subscriber
-        if sub.active:
+        if sub.active: #fully set up account
             return render(request, 'account_main.html')
-        else: #registration is not complete
-            if request.method == "POST":
-                form = PhoneNumberForm(request.POST, user=request.user)
-                #Process and verify PLUG IN BOGDANS STUFF HERE
-                return render(request, 'account_main.html')
-            else:
-                form = PhoneNumberForm(user=request.user)
-                return render(request, 'account_create.html', {'form': form})
-    except:
-        if request.method == "POST":
-            form = PhoneNumberForm(request.POST, user=request.user)
-            #Process and verify
-            number = form.data["phone_number"]
-            new_subscriber = Subscriber(user=request.user, phone=number, verif_code=123456, active=True)
-            new_subscriber.save()
-            return render(request, 'account_main.html')
+        elif sub.phone_verified: #confirmed phone number but not paid
+            return HttpResponseRedirect('/account/stripe_pay/')
+        else: # Phone number not yet confirmed
+            return HttpResponseRedirect('/account/phone_verify/')
+    except: #user not a subscriber yet
+        return HttpResponseRedirect('/account/phone_set/')
+
+
+#url /account/phone_set/
+@login_required
+def phone_set(request):
+    if request.method == "POST":
+        form = PhoneNumberForm(request.POST)
+        #Process and verify
+        number = form.validate()
+        if not number:
+            if form.data["phone_number"] != form.data["phone_number_confirm"]:
+                return render(request, 'phone_set.html', {'form': form, 'mismatchError': True})
+            return render(request, 'phone_set.html', {'form': form, 'formatError': True})
+        new_subscriber = Subscriber(user=request.user, phone=number, verif_code=123456, active=True)
+        new_subscriber.save()
+        return HttpResponseRedirect('/account/phone_verify/')
+    else:
+        form = PhoneNumberForm()
+        return render(request, 'phone_set.html', {'form': form})
+
+
+#url /account/phone_verify/
+@login_required
+def phone_verify(request):
+    if request.method == "POST":
+        form = PhoneNumberVerifyForm(request.POST)
+        #Process and verify
+        #check_code mismatchError
+        if form.data["code"] == str(123456):
+            return HttpResponseRedirect('/account/stripe_pay/')
         else:
-            form = PhoneNumberForm(user=request.user)
-            return render(request, 'account_create.html', {'form': form})
+            return render(request, 'phone_verify.html', {'form': form, 'mismatchError': True})
+    else:
+        form = PhoneNumberVerifyForm()
+        return render(request, 'phone_verify.html', {'form': form})
 
 
+#url /account/stripe_pay/
+@login_required
+def stripe_pay(request):
+    return render(request, 'stripe_pay.html')
 
 '''
 User inputs the phone number:

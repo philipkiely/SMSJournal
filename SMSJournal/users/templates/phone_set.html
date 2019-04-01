@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+    <!--stripe-->
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+</head>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <br>
+            <h1><span class="first-letter-title">P</span>hone Number</h1>
+            <h4>Please enter your phone number.</h4>
+            <h6>(Step 1 of 4)</h6>
+            {% include 'phone_widget.html' %}
+        </div>
+        <div class="col-12 col-md-6">
+            <br>
+            <img src="/static/undraw_texting_k35o.svg" class="img-fluid" alt="Phone Use">
+        </div>
+    </div><!--row-->
+</div>
+<!--Footer-->
+{% include 'footer.html' %}

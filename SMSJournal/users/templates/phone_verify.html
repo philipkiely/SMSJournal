@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+    <!--stripe-->
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+</head>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <br>
+            <h1><span class="first-letter-title">V</span>erify</h1>
+            <h4>Please enter your verification code.</h4>
+            <h6>(Step 2 of 4)</h6>
+            <div class="mb4">
+                <div class="card h-100" id="phoneField">
+                  <h4 class="card-header">Set Phone Number</h4>
+                  <div class="card-body">
+                    {% if mismatchError %}
+                    <div id="noMatch" class="alert alert-danger" role="alert">Error: Verification code incorrect.</div>
+                    {% endif %}
+                    <p class="card-text">Please enter the verification code that we sent to your phone. If you have not received a verification code within 2 minutes, please contact support at <a href="mailto:info@grammiegram.com">info@grammiegram.com</a>.</p>
+                    <form method="post">
+                      {% csrf_token %}
+                      {{ form.code }}
+                      <br>
+                  </div>
+                  <div class="card-footer">
+                      <button type="submit" onclick="swapViewToConfirm()" class="btn btn-primary">Verify Phone Number</button>
+                     </form>
+                  </div>
+                </div>
+                <br>
+            </div>
+            <script>
+                document.getElementById("id_code").classList.add("form-control")
+                document.getElementById("id_code").placeholder = "Verification Code";
+            </script>
+        </div>
+        <div class="col-12 col-md-6">
+            <br>
+            <img src="/static/undraw_product_teardown_elol.svg" class="img-fluid" alt="Phone Use">
+        </div>
+    </div><!--row-->
+</div>
+<!--Footer-->
+{% include 'footer.html' %}
