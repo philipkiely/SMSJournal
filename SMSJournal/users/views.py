@@ -12,6 +12,8 @@ from django.contrib.auth.models import User
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import EmailMessage
+import urllib.request as make_request
+from django.conf import settings
 
 
 #url /account
@@ -20,7 +22,15 @@ def account_main(request):
     try: #User is a registered subscriber
         sub = request.user.subscriber
         if sub.active: #fully set up account
-            return render(request, 'account_main.html')
+            form = PhoneNumberForm()
+            if sub.journal_set.count() == 0: #probably should be its own view, 4/4
+                make_request.Request("https://smsjournal.xyz/journals/api/entry/",
+                                     data={"names": "",
+                                           "message": "Welcome to SMSJournal! You can make journal entries to this file by sending messages to the SMSJournal phone number, (970)-507-7992. To send an entry to a different journal, just add a tag like @ideas and we'll find or create the journal \"ideas\" in your Google Drive.",
+                                           "phone": sub.phone,
+                                           "api_key": settings.API_KEY},
+                                     method="POST")
+            return render(request, 'account_main.html', {'form': form})
         elif sub.phone_verified: #confirmed phone number but not paid
             return HttpResponseRedirect('/account/stripe_pay/')
         else: # Phone number not yet confirmed

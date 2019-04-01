@@ -2,7 +2,6 @@ import json
 import urllib.request
 import os
 
-
 def lambda_handler(event, context):
     message = json.loads(event['Records'][0]['Sns']['Message'])
     words = message['messageBody'].split(" ")
@@ -18,8 +17,8 @@ def lambda_handler(event, context):
     if text != "": #strip extra space from end
         text = text[:-1]
     response = urllib.request.Request("https://smsjournal.xyz/journals/api/entry/",
-                                      data={"ids": ",".join(tags),
-                                            "message": text,
-                                            "phone": message['originationNumber'],
-                                            "api_key": os.environ["api_key"]},
-                                      method="POST")
+                                              data={"names": ",".join(tags),
+                                                    "message": text,
+                                                    "phone": message['originationNumber'],
+                                                    "api_key": os.environ["api_key"]},
+                                              method="POST")
