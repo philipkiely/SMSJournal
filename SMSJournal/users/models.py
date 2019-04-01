@@ -25,7 +25,7 @@ class Subscriber(models.Model):
 
     # Send 6 digit code to the user for verification
     def send_code(self):
-        client = boto3.client('pinpoint', region='us-east-1')
+        client = boto3.client('pinpoint')
         pinpoint_id = settings.AWS_PINPOINT_PROJECT_ID
         code = random.randint(100000, 999999)
         self.verif_code = code

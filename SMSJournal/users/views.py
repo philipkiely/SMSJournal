@@ -69,7 +69,7 @@ def phone_verify(request):
         #Process and verify
         #check_code mismatchError
         sub = request.user.subscriber
-        if form.data["code"] == sub.verif_code:
+        if form.data["code"] == str(sub.verif_code):
             sub.phone_verified = True
             sub.save()
             return HttpResponseRedirect('/account/stripe_pay/')
