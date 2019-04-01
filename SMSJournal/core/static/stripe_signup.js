@@ -21,8 +21,8 @@ function useStripe(token){
   document.getElementById('customButton').addEventListener('click', function(e) {
     handler.open({
       name: 'SMS journal',
-      description: 'Subscribe',
-      amount: 17.88
+      description: 'One-Year Subscription',
+      amount: 1788
     });
     e.preventDefault();
   });

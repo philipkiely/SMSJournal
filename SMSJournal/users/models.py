@@ -4,6 +4,8 @@ import random
 from django.conf import settings
 import boto3
 from django.utils import timezone
+import stripe
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 # Model of a user.
@@ -47,3 +49,23 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def subscribe(self, token):
+        customer = stripe.Customer.create(source=token,
+                                          description=self.phone)
+        self.stripe_customer_id = customer.id
+        self.save()
+        stripe.Subscription.create(
+            customer=customer.id,
+            items=[{"plan": settings.STRIPE_PLAN_ID,
+                    "quantity": 1}])
+
+    def delete_customer(self):
+        cust = stripe.Customer.retrieve(self.stripe_customer_id)
+        cust.delete()
+
+    def change_card(self, new_token):
+        stripe.Customer.modify(self.stripe_customer_id, source=new_token)
+
+    def give_discount(self, percent):
+        stripe.Customer.modify(self.stripe_customer_id, coupon="small_discount")

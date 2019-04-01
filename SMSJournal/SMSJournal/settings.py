@@ -164,3 +164,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/documents']
 LOGIN_URL = '/auth/login/google-oauth2'
 LOGIN_REDIRECT_URL = '/account/'
 LOGOUT_REDIRECT_URL = '/'
+
+STRIPE_PRODUCT_ID = "prod_Ee1TeQSUplYUUC"
+STRIPE_PLAN_ID = "standard_plan"
+STRIPE_SECRET_KEY = os.environ['STRIPE_SECRET_KEY']
+STRIPE_PUBLISHABLE_KEY = os.environ['STRIPE_PUBLISHABLE_KEY']

@@ -77,7 +77,7 @@ def phone_verify(request):
 #url /account/stripe_pay/
 @login_required
 def stripe_pay(request):
-    return render(request, 'stripe_pay.html')
+    return render(request, 'stripe_pay.html', {'username': request.user.username, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
 
 '''
