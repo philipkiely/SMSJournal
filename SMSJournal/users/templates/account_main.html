@@ -2,24 +2,35 @@
 <html>
 <head>
     {% include 'head.html' %}
-    <!--CSS sheet for iPhone-->
-    <link rel="stylesheet" href="/static/devices.min.css" type="text/css">
-    <!--Icons-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!--stripe-->
-    <script src="https://checkout.stripe.com/checkout.js"></script>
-    <!--Google API Client Library-->
-    <script src="https://apis.google.com/js/client.js"></script>
+    <script src="/static/stripe_change.js"> </script>
+    <script src="https://checkout.stripe.com/checkout.js"> </script>
 </head>
 <div class="container">
     <div class="row">
-        <p>This page shows when a subscriber with an active account logs in.</p>
-        <p>This page should let the subscriber do a few things:</p>
-        <ul>
-            <li>one-click, one-field form to post a journal entry</li>
-            <li>change phone number with verification</li>
-            <li>change payment options</li>
-            <li>delete account / cancel subscription </li>
-        </ul>
-    </div>
+        <div class="col-12 col-md-6">
+            <br>
+            <h1><span class="first-letter-title">A</span>ccount Dashboard</h1>
+            <p>You can change your payment information or phone number here. If you experience issues or want to change the Google account you use for SMSJournal, please contact support at <a href="mailto:info@grammiegram.com">info@grammiegram.com</a>.</p>
+            {% include 'phone_widget.html' %}
+            <button id="customButton" class="btn btn-primay cardButton">Change card</button>
+            <script>
+            var url_change = "{%url 'card_change' %}";var username = "{{username}}";
+            var user_email = "{{user_email}}";$(window).on("load",function(){changeCard('{{stripe_key}}')});
+            </script>
+            <p>Use the button below to cancel your SMSJournal subscription. You will be able to use the service for the rest of the existing subscription period.</p>
+            <button class="btn btn-primay cardButton" id="unsubscribeButton">Cancel Subscription</button>
+            <script>
+            document.getElementById("unsubscribeButton").addEventListener('click', function(e){
+                $("#unsubscribeButton").after('<h4>Your account will be permanently deleted. Are you sure?</h4> <form action="{% url "unsubscribe" %}"  method="post"> {% csrf_token %}<input type=hidden name="username"  value = "{{username}}"> <input type="submit" value="Confirm"> ');
+            });
+            </script>
+            <br>
+        </div>
+        <div class="col-12 col-md-6">
+            <br>
+            <img src="/static/undraw_bookmarks_r6up.svg" class="img-fluid" alt="Phone Use">
+        </div>
+    </div><!--row-->
 </div>
+<!--Footer-->
+{% include 'footer.html' %}

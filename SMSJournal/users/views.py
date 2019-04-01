@@ -1,11 +1,17 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-import os
-from django.conf import settings
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from .models import Subscriber
 from .forms import PhoneNumberForm, PhoneNumberVerifyForm
 from django.contrib.auth.decorators import login_required
+from rest_framework.decorators import api_view, permission_classes
+from core.decorators import define_usage
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import EmailMessage
 
 
 #url /account
@@ -63,6 +69,7 @@ def phone_verify(request):
 def stripe_pay(request):
     return render(request, 'stripe_pay.html')
 
+
 '''
 User inputs the phone number:
 -> save number into user's model
@@ -74,7 +81,6 @@ we can use this to see if phone is verified:
 code ==null => verified, otherwise no
 
 '''
-
 
 
 def check_code(request):
@@ -90,3 +96,58 @@ def check_code(request):
     except:
         print("No code field for user {}".format(usr_id))
     return render(request, 'some/url', {'error': 'Wrong code from the number'})
+
+
+# url / first_charge
+@define_usage(params={"stripeToken": "String", "username": "String"},
+              returns={"Result": "String"})
+@api_view(["POST"])
+@permission_classes((AllowAny,))
+def signup_and_charge(request):
+    try:
+        sub = User.objects.get(username=request.data["username"]).subscriber
+        sub.subscribe(request.data['stripeToken'])
+        return Response({"Result": "Done"})
+    except:
+        return Response({"Result": "Something went wrong"})
+
+
+@define_usage(params={"stripeToken": "String", "username": "String"},
+              returns={"Result": "String"})
+@api_view(["POST"])
+@permission_classes((AllowAny,))
+def stripe_card_change(request):
+    try:
+        sub = User.objects.get(username=request.data["username"]).subscriber
+        sub.change_card(request.data['stripeToken'])
+        return Response({"Result": "Done"})
+    except:
+        return Response({"Result": "Something went wrong."})
+
+
+def unsubscribe(request):
+    try:
+        sub = User.objects.get(username=request.data["username"]).subscriber
+        sub.delete_customer()
+        sub.active = False
+        sub.save()
+    except:
+        pass
+    return render(request, 'index.html')
+
+
+#this webhook can be set to be hit if payment fails. what do we do?
+# add extra field to model if payment failed or not and wait till it works or fails next time?
+@csrf_exempt
+def stripe_web_hook(request):
+    event_json = json.loads(request.body)
+    phone = event_json["phone"]
+    email = event_json["email"]
+    charge_id = event_json["id"]
+    email = EmailMessage(to=["info@grammiegram.com"],
+                         from_email="smsjournalanalytics@grammiegram.com",
+                         reply_to=["info@grammiegram.com"],
+                         subject="Error receiving payment from SMS Journal!",
+                         body="The charge {} has failed. Phone of the user: {}, email of the user: {}".format(charge_id, phone, email))
+    email.send()
+    return HttpResponse(status=200)
