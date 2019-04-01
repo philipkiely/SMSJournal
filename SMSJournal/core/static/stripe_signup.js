@@ -12,7 +12,9 @@ function useStripe(token){
             success: function(resultData) {
               if (resultData["Result"] != "Done" ){
                 alert("Something went wrong! Please try again or contact info@grammiegram.com for support.")
-              }
+            } else {
+                window.location.replace("/account/")
+                }
             }
       });
     }

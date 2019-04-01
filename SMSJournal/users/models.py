@@ -15,19 +15,21 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 class Subscriber(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=150, unique=True)
-    verif_code = models.IntegerField()
+    verif_code = models.IntegerField(null=True)
     phone_verified = models.BooleanField(default=False)
     active = models.BooleanField(default=False) #Is the subscription active?
     total_entries = models.IntegerField(default=0)
     last_entry = models.DateTimeField(default=timezone.now)
+    stripe_customer_id = models.CharField(max_length=150, blank=True, null=True)
     #ToDo: Timezone
 
     # Send 6 digit code to the user for verification
     def send_code(self):
-        client = boto3.client('pinpoint')
+        client = boto3.client('pinpoint', region='us-east-1')
         pinpoint_id = settings.AWS_PINPOINT_PROJECT_ID
         code = random.randint(100000, 999999)
         self.verif_code = code
+        self.save()
         client.send_messages(
             ApplicationId=pinpoint_id,
             MessageRequest={

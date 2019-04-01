@@ -23,14 +23,16 @@ def account_main(request):
         sub = request.user.subscriber
         if sub.active: #fully set up account
             form = PhoneNumberForm()
-            if sub.journal_set.count() == 0: #probably should be its own view, 4/4
+            """if sub.journal_set.count() == 0: #probably should be its own view, 4/4
                 make_request.Request("https://smsjournal.xyz/journals/api/entry/",
                                      data={"names": "",
                                            "message": "Welcome to SMSJournal! You can make journal entries to this file by sending messages to the SMSJournal phone number, (970)-507-7992. To send an entry to a different journal, just add a tag like @ideas and we'll find or create the journal \"ideas\" in your Google Drive.",
                                            "phone": sub.phone,
                                            "api_key": settings.API_KEY},
-                                     method="POST")
-            return render(request, 'account_main.html', {'form': form})
+                                     method="POST")"""
+            return render(request, 'account_main.html', {'form': form, 'user_email': sub.user.email, 'username': sub.user.username, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
+        elif sub.stripe_customer_id: #has paid, has not done first message
+            return HttpResponseRedirect('/account/initialize_journal/')
         elif sub.phone_verified: #confirmed phone number but not paid
             return HttpResponseRedirect('/account/stripe_pay/')
         else: # Phone number not yet confirmed
@@ -50,8 +52,9 @@ def phone_set(request):
             if form.data["phone_number"] != form.data["phone_number_confirm"]:
                 return render(request, 'phone_set.html', {'form': form, 'mismatchError': True})
             return render(request, 'phone_set.html', {'form': form, 'formatError': True})
-        new_subscriber = Subscriber(user=request.user, phone=number, verif_code=123456, active=True)
+        new_subscriber = Subscriber(user=request.user, phone=number)
         new_subscriber.save()
+        new_subscriber.send_code()
         return HttpResponseRedirect('/account/phone_verify/')
     else:
         form = PhoneNumberForm()
@@ -65,7 +68,10 @@ def phone_verify(request):
         form = PhoneNumberVerifyForm(request.POST)
         #Process and verify
         #check_code mismatchError
-        if form.data["code"] == str(123456):
+        sub = request.user.subscriber
+        if form.data["code"] == sub.verif_code:
+            sub.phone_verified = True
+            sub.save()
             return HttpResponseRedirect('/account/stripe_pay/')
         else:
             return render(request, 'phone_verify.html', {'form': form, 'mismatchError': True})
@@ -80,35 +86,13 @@ def stripe_pay(request):
     return render(request, 'stripe_pay.html', {'username': request.user.username, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
 
-'''
-User inputs the phone number:
--> save number into user's model
--> call send_code, it adds a random verif. code
-to the model too
--> once user inputs the code, call check_code
--> if the code is correct, verif.code is set to null
-we can use this to see if phone is verified:
-code ==null => verified, otherwise no
-
-'''
+#url /account/initialize_journal
+@login_required
+def initialize_journal(request):
+    pass
 
 
-def check_code(request):
-    usr_id = request.POST.get('usr_id')
-    subscriber_usr = User.objects.get(username=usr_id)
-    subscriber = Subscriber.objects.get(user=subscriber_usr)
-    submitted_code = request.POST.get('code')
-    try:
-        if subscriber.code == submitted_code:
-            subscriber.phone_number = request.POST.get('phone')
-            subscriber.verif_code = None
-            return redirect('/success/')
-    except:
-        print("No code field for user {}".format(usr_id))
-    return render(request, 'some/url', {'error': 'Wrong code from the number'})
-
-
-# url / first_charge
+# url
 @define_usage(params={"stripeToken": "String", "username": "String"},
               returns={"Result": "String"})
 @api_view(["POST"])
@@ -128,8 +112,12 @@ def signup_and_charge(request):
 @permission_classes((AllowAny,))
 def stripe_card_change(request):
     try:
+        print("in try")
         sub = User.objects.get(username=request.data["username"]).subscriber
+        print(sub.user.username)
+        print(request.data['stripeToken'])
         sub.change_card(request.data['stripeToken'])
+        print(request.data['stripeToken'])
         return Response({"Result": "Done"})
     except:
         return Response({"Result": "Something went wrong."})
