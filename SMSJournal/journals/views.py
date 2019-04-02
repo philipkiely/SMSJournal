@@ -55,6 +55,7 @@ def api_root(request):
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def api_journal_entry(request):
+    print("journal entry called")
     if request.data["api_key"] != settings.API_KEY: #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
     try:

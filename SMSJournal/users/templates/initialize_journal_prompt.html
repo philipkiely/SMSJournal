@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+</head>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <br>
+            <h1><span class="first-letter-title">A</span>lmost There</h1>
+            <h4>To complete your registration, please click the button below.</h4>
+            <h6>(Step 4 of 4)</h6>
+            <div class="mb4">
+                <div class="card h-100" id="phoneField">
+                  <h4 class="card-header">Initialize Journal</h4>
+                  <div class="card-body">
+                    <p class="card-text">Please press the button below to initialize your first journal. You may have to confirm your Google account again. If you have any issues, please contact support at <a href="mailto:info@grammiegram.com">info@grammiegram.com</a>.</p>
+                  </div>
+                  <div class="card-footer">
+                      <form method="post">
+                        {% csrf_token %}
+                      <button class="btn btn-primary cardButton">Complete Registration</button>
+                      </form>
+                  </div>
+                </div>
+                <br>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <br>
+            <img src="/static/undraw_message_sent_1030.svg" class="img-fluid" alt="Phone Use">
+        </div>
+    </div><!--row-->
+</div>
+<!--Footer-->
+{% include 'footer.html' %}

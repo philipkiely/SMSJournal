@@ -56,6 +56,7 @@ class Subscriber(models.Model):
         customer = stripe.Customer.create(source=token,
                                           description=self.phone)
         self.stripe_customer_id = customer.id
+        self.active = True
         self.save()
         stripe.Subscription.create(
             customer=customer.id,

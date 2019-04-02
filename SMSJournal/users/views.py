@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import EmailMessage
 import urllib.request as make_request
 from django.conf import settings
+from journals.views import api_journal_entry
 
 
 #url /account
@@ -23,13 +24,6 @@ def account_main(request):
         sub = request.user.subscriber
         if sub.active: #fully set up account
             form = PhoneNumberForm()
-            """if sub.journal_set.count() == 0: #probably should be its own view, 4/4
-                make_request.Request("https://smsjournal.xyz/journals/api/entry/",
-                                     data={"names": "",
-                                           "message": "Welcome to SMSJournal! You can make journal entries to this file by sending messages to the SMSJournal phone number, (970)-507-7992. To send an entry to a different journal, just add a tag like @ideas and we'll find or create the journal \"ideas\" in your Google Drive.",
-                                           "phone": sub.phone,
-                                           "api_key": settings.API_KEY},
-                                     method="POST")"""
             return render(request, 'account_main.html', {'form': form, 'user_email': sub.user.email, 'username': sub.user.username, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
         elif sub.stripe_customer_id: #has paid, has not done first message
             return HttpResponseRedirect('/account/initialize_journal/')
@@ -86,10 +80,33 @@ def stripe_pay(request):
     return render(request, 'stripe_pay.html', {'username': request.user.username, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
 
-#url /account/initialize_journal
+# url /account/initialize_journal_prompt/
+@login_required
+def initialize_journal_prompt(request):
+    if request.method == "POST":
+        return HttpResponseRedirect("/account/initialize_journal/")
+    else:
+        return render(request, 'initialize_journal_prompt.html')
+
+
+#url /account/initialize_journal/
 @login_required
 def initialize_journal(request):
-    pass
+    sub = request.user.subscriber
+    if sub.total_entries == 0:
+        if settings.DEBUG:
+            url = "http://127.0.0.1:8000/journals/api/entry/"
+        else:
+            url = "https://smsjournal.xyz/journals/api/entry/"
+        print(url)
+        resp = make_request.Request(url,
+                                    data={"names": "",
+                                          "message": "Welcome to SMSJournal! You can make journal entries to this file by sending messages to the SMSJournal phone number, (970)-507-7992. To send an entry to a different journal, just add a tag like @ideas and we'll find or create the journal \"ideas\" in your Google Drive.",
+                                          "phone": sub.phone,
+                                          "api_key": settings.API_KEY},
+                                    method="POST")
+        print(resp)
+    return HttpResponseRedirect("/account/")
 
 
 # url
