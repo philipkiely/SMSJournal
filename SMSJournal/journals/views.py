@@ -52,7 +52,7 @@ def api_root(request):
 #url /journals/api/entry
 @define_usage(params={"names": "String", "message": "String", "phone": "String", "api_key": "String"},
               returns={"Error": "String"})
-@api_view(["POST"])
+@api_view(["GET", "POST"])
 @permission_classes((AllowAny,))
 def api_journal_entry(request):
     print("journal entry called")

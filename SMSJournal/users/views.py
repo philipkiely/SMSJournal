@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import redirect
 from .models import Subscriber
 from .forms import PhoneNumberForm, PhoneNumberVerifyForm
 from django.contrib.auth.decorators import login_required
@@ -12,9 +11,16 @@ from django.contrib.auth.models import User
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import EmailMessage
-import urllib.request as make_request
 from django.conf import settings
-from journals.views import api_journal_entry
+import os
+from core.models import Metrics
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+import pickle
+from django.utils import timezone
+from journals.views import write_to_gdoc
+from journals.models import Journal, process_journal_name
 
 
 #url /account
@@ -84,7 +90,7 @@ def stripe_pay(request):
 @login_required
 def initialize_journal_prompt(request):
     if request.method == "POST":
-        return HttpResponseRedirect("/account/initialize_journal/")
+        return initialize_journal(request)
     else:
         return render(request, 'initialize_journal_prompt.html')
 
@@ -94,19 +100,76 @@ def initialize_journal_prompt(request):
 def initialize_journal(request):
     sub = request.user.subscriber
     if sub.total_entries == 0:
-        if settings.DEBUG:
-            url = "http://127.0.0.1:8000/journals/api/entry/"
-        else:
-            url = "https://smsjournal.xyz/journals/api/entry/"
-        print(url)
-        resp = make_request.Request(url,
-                                    data={"names": "",
-                                          "message": "Welcome to SMSJournal! You can make journal entries to this file by sending messages to the SMSJournal phone number, (970)-507-7992. To send an entry to a different journal, just add a tag like @ideas and we'll find or create the journal \"ideas\" in your Google Drive.",
-                                          "phone": sub.phone,
-                                          "api_key": settings.API_KEY},
-                                    method="POST")
-        print(resp)
-    return HttpResponseRedirect("/account/")
+        print("in if")
+        try:
+            met = Metrics.objects.get(current=True)
+            met.log_journal_entry()
+        except:
+            pass #never fail user request because of a metrics error
+        try:
+            print("in try")
+            creds = None
+            # The file token.pickle stores the user's access and refresh tokens, and is
+            # created automatically when the authorization flow completes for the first
+            # time.
+            if os.path.exists(os.path.join(settings.BASE_DIR, str(sub.id) + 'token.pickle')):
+                with open(os.path.join(settings.BASE_DIR, str(sub.id) + 'token.pickle'), 'rb') as token:
+                    creds = pickle.load(token)
+            # If there are no (valid) credentials available, let the user log in. ##RIGHT NOW JUST WRITES TO ONE ACCOUNT
+            print("line 119")
+            print(sub.id)
+            if not creds or not creds.valid:
+                if creds and creds.expired and creds.refresh_token:
+                    print("creds expired")
+                    creds.refresh(Request())
+                else:
+                    print("no creds")
+                    f = open(os.path.join(settings.BASE_DIR, 'credentials.json'), 'w') #THIS IS SO JANKY but we can't keep this as a file in the codebase
+                    f.write(settings.GOOGLE_CREDENTIALS)
+                    f.close()
+                    print("wrote file")
+                    flow = InstalledAppFlow.from_client_secrets_file(
+                        os.path.join(settings.BASE_DIR, 'credentials.json'),
+                        ['https://www.googleapis.com/auth/documents'])
+                    print("made flow")
+                    os.remove(os.path.join(settings.BASE_DIR, 'credentials.json')) #END JANK
+                    print("creds removed")
+                    creds = flow.run_local_server()
+                    print("creds from flow")
+                # Save the credentials for the next run
+                with open(os.path.join(settings.BASE_DIR, str(sub.id) + 'token.pickle'), 'wb') as token:
+                    pickle.dump(creds, token)
+            print("token stuff")
+            service = build('docs', 'v1', credentials=creds)
+            print("service")
+        except:
+            return render(request, 'initialize_journal_prompt.html', {"googleError": True})
+        names = ["SMSJournal"]
+        print("here")
+        print(names)
+        for name in names:
+            print(name)
+            try:
+                print("try")
+                journal = sub.journal_set.get(name=process_journal_name(name))
+                print("got journal")
+                write_to_gdoc(journal.google_docs_id, "Welcome to SMSJournal! You can make journal entries to this file by sending messages to the SMSJournal phone number, (970)-507-7992. To send an entry to a different journal, just add a tag like @ideas and we'll find or create the journal \"ideas\" in your Google Drive.", service)
+            except:
+                print("except")
+                doc = service.documents().create(body={"title": name}).execute()
+                print("doc made")
+                print(doc["documentId"])
+                print(doc.get("title"))
+                write_to_gdoc(doc["documentId"], "Welcome to SMSJournal! You can make journal entries to this file by sending messages to the SMSJournal phone number, (970)-507-7992. To send an entry to a different journal, just add a tag like @ideas and we'll find or create the journal \"ideas\" in your Google Drive.", service)
+                print("written")
+                journal = Journal(subscriber=sub,
+                                  name=process_journal_name(name),
+                                  google_docs_id=doc["documentId"])
+                journal.save()
+            sub.last_entry = timezone.now()
+            sub.total_entries = sub.total_entries + 1
+            sub.save()
+    return HttpResponseRedirect('/account/')
 
 
 # url

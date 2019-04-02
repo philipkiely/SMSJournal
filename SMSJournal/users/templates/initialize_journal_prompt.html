@@ -11,6 +11,9 @@
             <h4>To complete your registration, please click the button below.</h4>
             <h6>(Step 4 of 4)</h6>
             <div class="mb4">
+                {% if googleError %}
+                <div id="noMatch" class="alert alert-danger" role="alert">Error: Google Initialization Failed.</div>
+                {% endif %}
                 <div class="card h-100" id="phoneField">
                   <h4 class="card-header">Initialize Journal</h4>
                   <div class="card-body">
