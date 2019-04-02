@@ -21,6 +21,7 @@ import pickle
 from django.utils import timezone
 from journals.views import write_to_gdoc
 from journals.models import Journal, process_journal_name
+import boto3
 
 
 #url /account
@@ -169,6 +170,15 @@ def initialize_journal(request):
             sub.last_entry = timezone.now()
             sub.total_entries = sub.total_entries + 1
             sub.save()
+            client = boto3.client('pinpoint')
+            pinpoint_id = settings.AWS_PINPOINT_PROJECT_ID
+            client.send_messages(ApplicationId=pinpoint_id,
+                                 MessageRequest={'Context': {},
+                                                 'Addresses': {sub.phone: {"ChannelType": "SMS"}},
+                                                 'MessageConfiguration': {
+                                                 'SMSMessage': {'Body': 'Welcome to SMSJournal! This is the phone number where you can send your journal entries. Please save this number to your contacts as SMSJournal for easy access.',
+                                                                'OriginationNumber': "+19705077992",
+                                                                'MessageType': 'TRANSACTIONAL'}}})
     return HttpResponseRedirect('/account/')
 
 
