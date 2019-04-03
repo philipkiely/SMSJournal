@@ -32,8 +32,8 @@
               <div class="card-body">
                 <h4 class="first-letter-title">What is holding you back from keeping a daily journal?</h4>
                 <p>Keep a journal from anywhere on your phone without the hassle of setting up a dedicated journaling app.</p>
-                <p>With SMSJournal, you send text messages and our system records them to a file in your Google Drive, creating a chronological, editable journal.</p>
-                <p>SMSJournal is the premier instant message journaling service, all for just $1.49 per month.<p>
+                <p>With SMS Journal, you send yourself private text messages and our secure system transmits them to a file in your Google Drive, creating a chronological, editable, and entirely confidential journal.</p>
+                <p>SMSJournal is the premier instant message journaling service, available for just $1.49 per month (billed annually).<p>
                 </div>
                 {% if not user.is_authenticated %}
                 <div class="card-footer">
@@ -53,7 +53,7 @@
     <!--How it works Animation-->
     <div class="row">
         <div class="col-12 col-md-6">
-            <h1><span class="first-letter-title">J</span>ournal On Your Phone</h1>
+            <h1><span class="first-letter-title">J</span>ournal on Your Phone</h1>
             <div class="shrink-phone">
                 <div class="marvel-device iphone8 black">
                     <div class="top-bar"></div>
@@ -65,7 +65,7 @@
                     <div class="screen">
                         <div id="SMSMessages"> <!--make scrollable-->
                             <div class="message me">
-                                Send a message to see it appear in Google Docs.
+                                Send a message and see it appear in Google Docs.
                             </div>
                         </div>
                         <input class="form-control" type="text" id="sendMessage" placeholder="Your message here...">
@@ -76,7 +76,7 @@
             </div>
         </div>
         <div class="col-12 col-md-6">
-            <h1><span class="first-letter-title">E</span>dit In Google Docs</h1>
+            <h1><span class="first-letter-title">E</span>dit in Google Docs</h1>
         <form>
             <div class='form-group'>
                 <textarea class="form-control" id="gDoc" rows="18">
@@ -97,7 +97,7 @@
                 <div class="card h-100">
                   <h4 class="card-header">Forbes</h4>
                   <div class="card-body">
-                    <p class="card-text">Noma Nazish outlines the benefits of journaling for clearing your mind, self-improvement, reducing stress, improving your memory, and facilitating healing.</p>
+                    <p class="card-text">Noma Nazish, a journalist at Forbes, outlines the self-improvement benefits of journaling for clearing your mind, reducing stress, improving your memory, and facilitating healing.</p>
                   </div>
                   <div class="card-footer">
                     <a href="https://www.forbes.com/sites/nomanazish/2017/12/29/five-legit-reasons-to-keep-a-journal-in-2018/#34a5085955e1" class="btn btn-primary cardButton">Read</a>
@@ -109,7 +109,7 @@
                 <div class="card h-100">
                   <h4 class="card-header">The Art of Manliness</h4>
                   <div class="card-body">
-                    <p class="card-text">Brett &amp; Kate McKay explain the daily journal as a historical tool and artifact. They help you create a journaling practice to record your family history.</p>
+                    <p class="card-text">Brett and Kate McKay, the founders of a popular lifestyle website, explain the daily journal as an historical tool and artifact. In this piece, the authors help you create a journaling practice to record your family history.</p>
                   </div>
                   <div class="card-footer">
                     <a href="https://www.artofmanliness.com/articles/30-days-to-a-better-man-day-8-start-a-journal/" class="btn btn-primary cardButton">Read</a>
@@ -121,7 +121,7 @@
                 <div class="card h-100">
                     <h4 class="card-header">Mission</h4>
                     <div class="card-body">
-                      <p class="card-text">Benjamin Hardy reveals the importance of journaling to his success and provides encouragement and instruction in how to journal effectively.</p>
+                      <p class="card-text">Benjamin Hardy, an author and motivational speaker, reveals the importance of journaling to his success and provides encouragement and instruction in how to journal effectively.</p>
                     </div>
                     <div class="card-footer">
                       <a href="https://medium.com/the-mission/why-keeping-a-daily-journal-could-change-your-life-9a4c11f1a475" class="btn btn-primary cardButton">Read</a>
@@ -144,15 +144,15 @@
                   <div class="card h-100">
                     <h4 class="card-header">Unlimited Journaling</h4>
                     <div class="card-body">
-                      <p class="card-text">With a simple @tag, a message goes into a seperate journal. Each message can have an unlimited tags, and if a tag is used for the first time SMSJournal automatically creates a new journal. An untagged message is posted in your default journal, named "SMSJournal".</p>
+                      <p class="card-text">With a simple @tag, your message goes into a dedicated journal. Each message can have unlimited tags, and if a tag is used for the first time, SMSJournal automatically creates a new journal. An untagged message is posted in your default journal, named "SMSJournal."</p>
                     </div>
                   </div>
                 </div>
                 <div class="mb-4">
                   <div class="card h-100">
-                    <h4 class="card-header">Integrate Everywhere</h4>
+                    <h4 class="card-header">Integrate Everywhere, Anytime</h4>
                     <div class="card-body">
-                      <p class="card-text">SMSJournal works on anything that can send a text message, from a flip phone to a flagship smartphone. Use Siri, Alexa, and more to journal by voice.</p>
+                      <p class="card-text">Add to your journals around the clock. SMSJournal works on anything that can send a text message, from a flip phone to a flagship smartphone. You can also set up Siri or Alexa to journal by voice.</p>
                     </div>
                   </div>
                 </div>
@@ -160,7 +160,7 @@
                   <div class="card h-100">
                     <h4 class="card-header">Secure and Private</h4>
                     <div class="card-body">
-                      <p class="card-text">Every message is sent directly from your phone to Google Docs by an encrypted AWS Lambda function. We do not read or log your messages, and the bits of personal data we collect to provide the service are stored in a secure AWS database.</p>
+                      <p class="card-text">Our purpose is protecting your privacy. Every message is sent directly from your phone to Google Docs by an encrypted transmission through an AWS Lambda function. We do not read or log your messages, and the phone number, payment token, and encrypted journal names that we collect to provide the service are stored in a secure AWS database.</p>
                     </div>
                   </div>
                 </div>
@@ -180,10 +180,10 @@
               <div class="card h-100">
                 <h4 class="card-header">See the Code</h4>
                 <div class="card-body">
-                  <p class="card-text">100% of the SMSJournal code, from this website to the backend systems, are open source under the Apache 2.0 License. That means that our security and privacy claims are independently verifiable. You also have the option of setting up and hosting your own version of the service.</p>
+                  <p class="card-text">One hundred percent of the SMSJournal code, from this website to the backend systems, are open source under the Apache 2.0 License. That means that our security and privacy claims are independently verifiable. You also have the option of setting up and hosting your own version of the service.</p>
                 </div>
                 <div class="card-footer">
-                  <a href="https://github.com/philipkiely/SMSJournal" class="btn btn-primary cardButton">Get The Code</a>
+                  <a href="https://github.com/philipkiely/SMSJournal" class="btn btn-primary cardButton">Get the Code</a>
                 </div>
               </div>
             </div>
@@ -191,10 +191,10 @@
               <div class="card h-100">
                 <h4 class="card-header">See the Idea</h4>
                 <div class="card-body">
-                  <p class="card-text">Read the original design concept whitepaper behind SMSJournal. While the paper does not fully describe the final product, it was the first idea for how to implement and create SMSJournal. Plus, it has some fun diagrams!</p>
+                  <p class="card-text">Read the original design concept whitepaper behind SMSJournal. This paper, written before SMSJournal was fully functional, delineates the first ideas for how to implement and create SMSJournal. Plus, it has some fun diagrams!</p>
                 </div>
                 <div class="card-footer">
-                  <a href="/SMSJournalWhitepaper.pdf" class="btn btn-primary cardButton">Read The Paper</a>
+                  <a href="/SMSJournalWhitepaper.pdf" class="btn btn-primary cardButton">Read the Paper</a>
                 </div>
               </div>
             </div>

@@ -22,7 +22,7 @@
                     <p class="card-text">Change the credit card associated with your SMSJournal account. You will not be charged until the next subscription period.</p>
                 </div>
                   <div class="card-footer">
-                      <button id="customButton" class="btn btn-primay cardButton">Change card</button>
+                      <button id="customButton" class="btn btn-primay cardButton">Change Card</button>
                       <script>
                       var url_change = "{%url 'card_change' %}";var username = "{{username}}";
                       var user_email = "{{user_email}}";$(window).on("load",function(){changeCard('{{stripe_key}}')});

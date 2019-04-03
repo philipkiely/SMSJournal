@@ -40,7 +40,11 @@ window.onload = setYear();
 
 
 function addToGDoc(s) { //TODO: Fix bug with send after edit
-    timestamp = Date().toString().split(":").splice(0, 2).join(":");
+    var d = new Date();
+    var ampm = (d.getHours() < 12) ? "AM" : "PM";
+    var hour = (d.getHours() < 12) ? d.getHours() : d.getHours() - 12;
+    timestamp = "Recorded " + Date().toString().split(":").splice(0, 2).join(":").substring(4)
+    timestamp = timestamp.substring(0, timestamp.length-4)+hour.toString()+timestamp.substring(timestamp.length-3)+ampm;
     document.getElementById("gDoc").innerHTML = timestamp + "\n" + s + "\n\n" + document.getElementById("gDoc").innerHTML
 }
 
