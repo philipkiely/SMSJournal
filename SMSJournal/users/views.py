@@ -49,10 +49,12 @@ def phone_set(request):
         form = PhoneNumberForm(request.POST)
         #Process and verify
         number = form.validate()
-        if not number:
-            if form.data["phone_number"] != form.data["phone_number_confirm"]:
-                return render(request, 'phone_set.html', {'form': form, 'mismatchError': True})
+        if number == "ERR_NO_MATCH":
+            return render(request, 'phone_set.html', {'form': form, 'mismatchError': True})
+        elif number == "ERR_FORMAT":
             return render(request, 'phone_set.html', {'form': form, 'formatError': True})
+        elif number == "ERR_USER_EXISTS":
+            return render(request, 'phone_set.html', {'form': form, 'existsError': True})
         new_subscriber = Subscriber(user=request.user, phone=number)
         new_subscriber.save()
         new_subscriber.send_code()
