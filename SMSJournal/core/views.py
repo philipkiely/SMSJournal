@@ -5,7 +5,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from core.decorators import define_usage
 from django.conf import settings
-
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect, HttpResponse
+import json
+from django.core.mail import EmailMessage
 # Basic Renders
 
 
@@ -46,3 +49,26 @@ def api_daily_metrics(request):
         return Response({"Result": "API Key Incorrect"})
     daily_metrics()
     return Response({"Result": "Done"})
+
+
+@csrf_exempt
+def stripe_web_hook(request):
+    event_json = json.loads(request.body)
+    try:
+        data = event_json["object"]
+        charge_id = data["id"]
+        email = data["billing_details"]["name"]
+        email = EmailMessage(to=["info@grammiegram.com"],
+                            from_email="smsjournalanalytics@grammiegram.com",
+                            reply_to=["info@grammiegram.com"],
+                            subject="Error receiving payment from SMS Journal!",
+                            body="The charge {} has failed. Email of the user: {}".format(charge_id, email))
+        email.send()
+    except:
+        email = EmailMessage(to=["info@grammiegram.com"],
+                            from_email="smsjournalanalytics@grammiegram.com",
+                            reply_to=["info@grammiegram.com"],
+                            subject="Error receiving payment from SMS Journal!",
+                            body="The undetermined error occured. The response from stripe:\n {}".format(json.dumps(event_json)))
+        email.send()
+    return HttpResponse(status=200)

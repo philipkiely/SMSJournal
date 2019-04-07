@@ -224,18 +224,4 @@ def unsubscribe(request):
     return render(request, 'index.html')
 
 
-#this webhook can be set to be hit if payment fails. what do we do?
-# add extra field to model if payment failed or not and wait till it works or fails next time?
-@csrf_exempt
-def stripe_web_hook(request):
-    event_json = json.loads(request.body)
-    phone = event_json["phone"]
-    email = event_json["email"]
-    charge_id = event_json["id"]
-    email = EmailMessage(to=["info@grammiegram.com"],
-                         from_email="smsjournalanalytics@grammiegram.com",
-                         reply_to=["info@grammiegram.com"],
-                         subject="Error receiving payment from SMS Journal!",
-                         body="The charge {} has failed. Phone of the user: {}, email of the user: {}".format(charge_id, phone, email))
-    email.send()
-    return HttpResponse(status=200)
+
