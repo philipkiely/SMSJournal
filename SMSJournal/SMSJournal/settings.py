@@ -26,7 +26,6 @@ SECRET_KEY = str(os.environ['SMSJOURNAL_SECRET_KEY'])
 DEBUG = bool(int(os.environ['SMSJOURNAL_DEBUG_INT'])) # 1 in test, 0 in prod
 
 API_KEY = os.environ['API_KEY']
-GOOGLE_CREDENTIALS = os.environ['SMSJ_GOOGLE_CREDENTIALS']
 
 
 AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
