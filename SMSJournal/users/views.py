@@ -113,34 +113,21 @@ def initialize_journal(request):
             # The file token.pickle stores the user's access and refresh tokens, and is
             # created automatically when the authorization flow completes for the first
             # time.
-            if settings.DEBUG:
-                if os.path.exists(os.path.join(settings.BASE_DIR, str(sub.id) + 'token.pickle')):
-                    with open(os.path.join(settings.BASE_DIR, str(sub.id) + 'token.pickle'), 'rb') as token:
-                        creds = pickle.load(token)
-            else:
-                pass #EFS call here
+            if os.path.exists(os.path.join(settings.EFS_ROOT, str(subscriber.id) + 'token.pickle')):
+                with open(os.path.join(settings.EFS_ROOT, str(subscriber.id) + 'token.pickle'), 'rb') as token:
+                    creds = pickle.load(token)
             # If there are no (valid) credentials available, let the user log in. ##RIGHT NOW JUST WRITES TO ONE ACCOUNT
             if not creds or not creds.valid:
                 if creds and creds.expired and creds.refresh_token:
                     creds.refresh(Request())
                 else:
-                    if settings.DEBUG:
-                        f = open(os.path.join(settings.BASE_DIR, 'credentials.json'), 'w') #THIS IS SO JANKY but we can't keep this as a file in the codebase
-                        f.write(settings.GOOGLE_CREDENTIALS)
-                        f.close()
-                        flow = InstalledAppFlow.from_client_secrets_file(
-                            os.path.join(settings.BASE_DIR, 'credentials.json'),
-                            ['https://www.googleapis.com/auth/documents'])
-                        os.remove(os.path.join(settings.BASE_DIR, 'credentials.json')) #END JANK
-                    else:
-                        pass #EFS call here
+                    flow = InstalledAppFlow.from_client_secrets_file(
+                        os.path.join(settings.EFS_ROOT, 'credentials.json'),
+                        ['https://www.googleapis.com/auth/documents'])
                     creds = flow.run_local_server()
                 # Save the credentials for the next run
-                if settings.DEBUG:
-                    with open(os.path.join(settings.BASE_DIR, str(sub.id) + 'token.pickle'), 'wb') as token:
-                        pickle.dump(creds, token)
-                else:
-                    pass #EFS call here
+                with open(os.path.join(settings.EFS_ROOT, str(subscriber.id) + 'token.pickle'), 'wb') as token:
+                    pickle.dump(creds, token)
             service = build('docs', 'v1', credentials=creds)
         except:
             return render(request, 'initialize_journal_prompt.html', {"googleError": True})
