@@ -6,6 +6,8 @@
         <div id="noMatch" class="alert alert-danger" role="alert">Error: phone numbers don't match.</div>
         {% endif %}{% if formatError %}
         <div id="noFormat" class="alert alert-danger" role="alert">Error: phone numbers not recognized.</div>
+        {% endif %}{% if existsError %}
+        <div id="noFormat" class="alert alert-danger" role="alert">Error: user with this phone number already exists.</div>
         {% endif %}
         <p class="card-text">Please enter the phone number that you would like to journal from. We will send you a code to confirm the number.</p>
         <form method="post">
