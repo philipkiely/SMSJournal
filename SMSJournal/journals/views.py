@@ -23,17 +23,14 @@ def to_human_readable(d, tz):
 
 
 def write_to_gdoc(docID, message, service):
-    print("write called")
     test = delorean.Delorean()
     t = "US/Central" #user.timezone pytz.all_timezones
     date_time = to_human_readable(test, t)
-    print(date_time)
     requests = [{'insertText': {'location': {'index': 1},
                                 'text': message+"\n\n"}},
                 {'insertText': {'location': {'index': 1},
                                 'text': date_time+"\n\n"}}]
     service.documents().batchUpdate(documentId=docID, body={'requests': requests}).execute()
-    print("write complete")
 
 
 #url /journals/api/
@@ -55,7 +52,6 @@ def api_root(request):
 @api_view(["GET", "POST"])
 @permission_classes((AllowAny,))
 def api_journal_entry(request):
-    print("journal entry called")
     if request.data["api_key"] != settings.API_KEY: #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
     try:
@@ -73,25 +69,34 @@ def api_journal_entry(request):
         # The file token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        if os.path.exists(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle')):
-            with open(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle'), 'rb') as token:
-                creds = pickle.load(token)
+        if settings.DEBUG:
+            if os.path.exists(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle')):
+                with open(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle'), 'rb') as token:
+                    creds = pickle.load(token)
+        else:
+            pass #EFS call here
         # If there are no (valid) credentials available, let the user log in. ##RIGHT NOW JUST WRITES TO ONE ACCOUNT
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                f = open(os.path.join(settings.BASE_DIR, 'credentials.json'), 'w') #THIS IS SO JANKY but we can't keep this as a file in the codebase
-                f.write(settings.GOOGLE_CREDENTIALS)
-                f.close()
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    os.path.join(settings.BASE_DIR, 'credentials.json'),
-                    ['https://www.googleapis.com/auth/documents'])
-                os.remove(os.path.join(settings.BASE_DIR, 'credentials.json')) #END JANK
+                if settings.DEBUG:
+                    f = open(os.path.join(settings.BASE_DIR, 'credentials.json'), 'w') #THIS IS SO JANKY but we can't keep this as a file in the codebase
+                    f.write(settings.GOOGLE_CREDENTIALS)
+                    f.close()
+                    flow = InstalledAppFlow.from_client_secrets_file(
+                        os.path.join(settings.BASE_DIR, 'credentials.json'),
+                        ['https://www.googleapis.com/auth/documents'])
+                    os.remove(os.path.join(settings.BASE_DIR, 'credentials.json')) #END JANK
+                else:
+                    pass #EFS call here
                 creds = flow.run_local_server()
             # Save the credentials for the next run
-            with open(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle'), 'wb') as token:
-                pickle.dump(creds, token)
+            if settings.DEBUG:
+                with open(os.path.join(settings.BASE_DIR, str(subscriber.id) + 'token.pickle'), 'wb') as token:
+                    pickle.dump(creds, token)
+            else:
+                pass #EFS call here
         service = build('docs', 'v1', credentials=creds)
     except:
         return Response({"Error": "Google Service Initialization Error"})
@@ -101,24 +106,13 @@ def api_journal_entry(request):
         return Response({"Error": "names parameter not included in call"})
     if names == [""]:
         names = ["SMSJournal"]
-    print(request.data["phone"])
-    print("here")
-    print(names)
     for name in names:
-        print(name)
         try:
-            print("try")
             journal = user_journals.get(name=process_journal_name(name))
-            print("got journal")
             write_to_gdoc(journal.google_docs_id, request.data["message"], service)
         except:
-            print("except")
             doc = service.documents().create(body={"title": name}).execute()
-            print("doc made")
-            print(doc["documentId"])
-            print(doc.get("title"))
             write_to_gdoc(doc["documentId"], request.data["message"], service)
-            print("written")
             journal = Journal(subscriber=subscriber,
                               name=process_journal_name(name),
                               google_docs_id=doc["documentId"])
