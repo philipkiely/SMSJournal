@@ -94,8 +94,8 @@ DATABASES = {
         'NAME': os.environ['SMSJOURNAL_DB_NAME'],
         'USER': os.environ['SMSJOURNAL_DB_USER'],
         'PASSWORD': os.environ['SMSJOURNAL_DB_PASS'],
-        'HOST': '127.0.0.1',
-        'PORT': '',
+        'HOST': os.environ['SMSJOURNAL_DB_HOST'],
+        'PORT': os.environ['SMSJOURNAL_DB_PORT'],
     }
 }
 
