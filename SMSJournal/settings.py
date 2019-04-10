@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import socket
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +30,11 @@ API_KEY = os.environ['API_KEY']
 
 
 AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
+
 ALLOWED_HOSTS = os.environ["SMSJ_ALLOWED_HOSTS"].split(",")
+if not DEBUG:
+    local_ip = str(socket.gethostbyname(socket.gethostname()))
+    ALLOWED_HOSTS.append(local_ip)
 
 
 
