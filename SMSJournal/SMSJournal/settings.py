@@ -87,17 +87,28 @@ WSGI_APPLICATION = 'SMSJournal.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['SMSJOURNAL_DB_NAME'],
-        'USER': os.environ['SMSJOURNAL_DB_USER'],
-        'PASSWORD': os.environ['SMSJOURNAL_DB_PASS'],
-        'HOST': os.environ['SMSJOURNAL_DB_HOST'],
-        'PORT': os.environ['SMSJOURNAL_DB_PORT'],
+if not DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ['SMSJOURNAL_DB_NAME'],
+            'USER': os.environ['SMSJOURNAL_DB_USER'],
+            'PASSWORD': os.environ['SMSJOURNAL_DB_PASS'],
+            'HOST': os.environ['SMSJOURNAL_DB_HOST'],
+            'PORT': os.environ['SMSJOURNAL_DB_PORT'],
+        }
+    }
 
 
 # Password validation
