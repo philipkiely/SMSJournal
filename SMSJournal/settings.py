@@ -15,24 +15,23 @@ import socket
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#EFS_ROOT = os.environ['SMSJ_EFS_PATH'] # Where the EFS is mounted, or just a path to the project root locally
-EFS_ROOT = "/efs"
+EFS_ROOT = os.environ['SMSJ_EFS_PATH'] # Where the EFS is mounted, or just a path to the project root locally
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = str(os.environ['SMSJOURNAL_SECRET_KEY'])
-SECRET_KEY = "kuku" #temp setting
+SECRET_KEY = str(os.environ['SMSJOURNAL_SECRET_KEY'])
+
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = bool(int(os.environ['SMSJOURNAL_DEBUG_INT'])) # 1 in test, 0 in prod
-DEBUG = 0
-#API_KEY = os.environ['API_KEY']
-API_KEY = "test_key"
+DEBUG = bool(int(os.environ['SMSJOURNAL_DEBUG_INT'])) # 1 in test, 0 in prod
+
+API_KEY = os.environ['API_KEY']
+
 
 AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
 
-#ALLOWED_HOSTS = os.environ["SMSJ_ALLOWED_HOSTS"].split(",")
-ALLOWED_HOSTS = ["SMSJournal.trgakfcfz6.us-east-1.elasticbeanstalk.com"]
+ALLOWED_HOSTS = os.environ["SMSJ_ALLOWED_HOSTS"].split(",")
 if not DEBUG:
     local_ip = str(socket.gethostbyname(socket.gethostname()))
     ALLOWED_HOSTS.append(local_ip)
@@ -48,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'social_django',
     'core.apps.CoreConfig',
@@ -154,8 +154,7 @@ USE_TZ = True
 EMAIL_USE_SSL = False
 EMAIL_HOST = "mail.hover.com"
 EMAIL_HOST_USER = "info@grammiegram.com"
-#EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASS"]
-EMAIL_HOST_PASSWORD = "password"
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASS"]
 EMAIL_PORT = 587
 
 # Static files (CSS, JavaScript, Images)
@@ -176,8 +175,8 @@ REST_FRAMEWORK = {
 
 # social_auth settings
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "key" #os.environ['SMSJOURNAL_OAUTH2_KEY']
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "key" #os.environ['SMSJOURNAL_OAUTH2_SECRET']
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SMSJOURNAL_OAUTH2_KEY']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SMSJOURNAL_OAUTH2_SECRET']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/documents']
 LOGIN_URL = '/auth/login/google-oauth2'
 LOGIN_REDIRECT_URL = '/account/'
@@ -185,5 +184,5 @@ LOGOUT_REDIRECT_URL = '/'
 
 STRIPE_PRODUCT_ID = "prod_Ee1TeQSUplYUUC"
 STRIPE_PLAN_ID = "standard_plan"
-STRIPE_SECRET_KEY = "key" # os.environ['STRIPE_SECRET_KEY']
-STRIPE_PUBLISHABLE_KEY = "key" #os.environ['STRIPE_PUBLISHABLE_KEY']
+STRIPE_SECRET_KEY = os.environ['STRIPE_SECRET_KEY']
+STRIPE_PUBLISHABLE_KEY = os.environ['STRIPE_PUBLISHABLE_KEY']
