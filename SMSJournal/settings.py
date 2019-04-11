@@ -24,15 +24,15 @@ EFS_ROOT = os.environ['SMSJ_EFS_PATH'] # Where the EFS is mounted, or just a pat
 SECRET_KEY = str(os.environ['SMSJOURNAL_SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ['SMSJOURNAL_DEBUG_INT'])) # 1 in test, 0 in prod
-
+#DEBUG = bool(int(os.environ['SMSJOURNAL_DEBUG_INT'])) # 1 in test, 0 in prod
+DEBUG = 1
 API_KEY = os.environ['API_KEY']
 
 
 AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
 
 ALLOWED_HOSTS = os.environ["SMSJ_ALLOWED_HOSTS"].split(",")
-if not DEBUG:
+if DEBUG:
     local_ip = str(socket.gethostbyname(socket.gethostname()))
     ALLOWED_HOSTS.append(local_ip)
 
@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'SMSJournal.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-if not DEBUG:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
