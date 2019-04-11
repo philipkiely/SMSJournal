@@ -162,6 +162,8 @@ EMAIL_PORT = 587
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL)
+
 # Allow CSRF token to be stored in sessions to prevent 403 error with AJAX
 CSRF_USE_SESSIONS = True
 
