@@ -32,7 +32,7 @@ API_KEY = "test_key"
 AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
 
 #ALLOWED_HOSTS = os.environ["SMSJ_ALLOWED_HOSTS"].split(",")
-ALLOWED_HOSTS = "SMSJournal.trgakfcfz6.us-east-1.elasticbeanstalk.com"
+ALLOWED_HOSTS = ["SMSJournal.trgakfcfz6.us-east-1.elasticbeanstalk.com"]
 if not DEBUG:
     local_ip = str(socket.gethostbyname(socket.gethostname()))
     ALLOWED_HOSTS.append(local_ip)
