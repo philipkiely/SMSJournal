@@ -149,6 +149,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+SITE_ID = 1
+
 
 # Email information
 EMAIL_USE_SSL = False
