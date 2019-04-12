@@ -113,8 +113,8 @@ def initialize_journal(request):
             # The file token.pickle stores the user's access and refresh tokens, and is
             # created automatically when the authorization flow completes for the first
             # time.
-            if os.path.exists(os.path.join(settings.EFS_ROOT, str(subscriber.id) + 'token.pickle')):
-                with open(os.path.join(settings.EFS_ROOT, str(subscriber.id) + 'token.pickle'), 'rb') as token:
+            if os.path.exists(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle')):
+                with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'rb') as token:
                     creds = pickle.load(token)
             # If there are no (valid) credentials available, let the user log in. ##RIGHT NOW JUST WRITES TO ONE ACCOUNT
             if not creds or not creds.valid:
@@ -126,7 +126,7 @@ def initialize_journal(request):
                         ['https://www.googleapis.com/auth/documents'])
                     creds = flow.run_local_server()
                 # Save the credentials for the next run
-                with open(os.path.join(settings.EFS_ROOT, str(subscriber.id) + 'token.pickle'), 'wb') as token:
+                with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'wb') as token:
                     pickle.dump(creds, token)
             service = build('docs', 'v1', credentials=creds)
         except:
