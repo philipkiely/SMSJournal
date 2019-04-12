@@ -146,7 +146,7 @@ def initialize_journal(request):
             sub.last_entry = timezone.now()
             sub.total_entries = sub.total_entries + 1
             sub.save()
-            client = boto3.client('pinpoint')
+            client = boto3.client('pinpoint', 'us-east-1')
             pinpoint_id = settings.AWS_PINPOINT_PROJECT_ID
             client.send_messages(ApplicationId=pinpoint_id,
                                  MessageRequest={'Context': {},
