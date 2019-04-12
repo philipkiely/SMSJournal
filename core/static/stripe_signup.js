@@ -3,6 +3,7 @@ function useStripe(token){
     key: token,
     image: '/static/undraw_credit_card_df1m.png',
     locale: 'auto',
+    email: user_email,
     token: function(tkn) {
       $.ajax({
             type: 'POST',

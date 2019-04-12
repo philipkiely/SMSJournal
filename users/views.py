@@ -86,7 +86,7 @@ def phone_verify(request):
 #url /account/stripe_pay/
 @login_required
 def stripe_pay(request):
-    return render(request, 'stripe_pay.html', {'username': request.user.username, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
+    return render(request, 'stripe_pay.html', {'user_email': request.user.email, 'username': request.user.username, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
 
 # url /account/initialize_journal_prompt/
