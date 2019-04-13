@@ -101,37 +101,54 @@ def initialize_journal_prompt(request):
 #url /account/initialize_journal/
 @login_required
 def initialize_journal(request):
+    f = os.path.join(settings.EFS_ROOT, 'log.txt') #DELETE THIS
     sub = request.user.subscriber
+    f.write("got sub\n")
     if sub.total_entries == 0:
+        f.write("In If\n")
         try:
             met = Metrics.objects.get(current=True)
             met.log_journal_entry()
         except:
             pass #never fail user request because of a metrics error
         try:
+            f.write("in google credentials try\n")
             creds = None
             # The file token.pickle stores the user's access and refresh tokens, and is
             # created automatically when the authorization flow completes for the first
             # time.
             if os.path.exists(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle')):
+                f.write("in os.path.exists for token\n")
                 with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'rb') as token:
+                    f.write("opening token pickle\n")
                     creds = pickle.load(token)
-            # If there are no (valid) credentials available, let the user log in. ##RIGHT NOW JUST WRITES TO ONE ACCOUNT
+                    f.write("loaded pickle\n")
+            # If there are no (valid) credentials available, let the user log in.
             if not creds or not creds.valid:
+                f.write("not creds or not valid creds\n")
                 if creds and creds.expired and creds.refresh_token:
+                    f.write("creds and creds.expired and creds.refresh_token\n")
                     creds.refresh(Request())
+                    f.write("refresh suceeded\n")
                 else:
+                    f.write("NOT creds and creds.expired and creds.refresh_token\n")
                     flow = InstalledAppFlow.from_client_secrets_file(
                         os.path.join(settings.EFS_ROOT, 'credentials.json'),
                         ['https://www.googleapis.com/auth/documents'])
+                    f.write("sick flow acquired\n")
                     creds = flow.run_local_server()
+                    f.write("creds acquired\n")
                 # Save the credentials for the next run
                 with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'wb') as token:
+                    f.write("save file open\n")
                     pickle.dump(creds, token)
+                    f.write("pickle dumped\n")
             service = build('docs', 'v1', credentials=creds)
+            f.write("service built\n")
         except:
             return render(request, 'initialize_journal_prompt.html', {"googleError": True})
         names = ["SMSJournal"]
+        f.write("google done")
         for name in names:
             try:
                 journal = sub.journal_set.get(name=process_journal_name(name))
