@@ -22,7 +22,7 @@
                   <div class="card-footer">
                       <button id="customButton" class="btn btn-primary cardButton">Checkout</button>
                         <script>
-                        var email = "{{user_email}}";
+                        var user_email = "{{user_email}}";
                         var url_signup = "{%url 'signup_and_charge' %}";var username = "{{username}}";$(window).on("load",function(){useStripe('{{stripe_key}}')});
                         </script>
                   </div>
