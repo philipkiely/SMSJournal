@@ -101,7 +101,7 @@ def initialize_journal_prompt(request):
 #url /account/initialize_journal/
 @login_required
 def initialize_journal(request):
-    f = os.path.join(settings.EFS_ROOT, 'log.txt') #DELETE THIS
+    f = open(os.path.join(settings.EFS_ROOT, 'log.txt'), 'w') #DELETE THIS
     sub = request.user.subscriber
     f.write("got sub\n")
     if sub.total_entries == 0:
