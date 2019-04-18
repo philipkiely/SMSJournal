@@ -127,7 +127,7 @@ def initialize_journal(request):
                 os.path.join(settings.EFS_ROOT, 'credentials.json'),
                 ['https://www.googleapis.com/auth/documents'])
             f.write("sick flow acquired\n")
-            creds = flow.run_console()
+            creds = flow.run_local_server(port=0)
             f.write("creds acquired\n")
         # Save the credentials for the next run
         with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'wb') as token:
