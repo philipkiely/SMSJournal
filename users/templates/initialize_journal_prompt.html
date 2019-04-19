@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    {% include 'head.html' %}
+    {% include 'head.html' %} 
 </head>
 <div class="container">
     <div class="row">
@@ -20,7 +20,22 @@
                     <p class="card-text">Please press the button below to initialize your first journal. You may have to confirm your Google account again. If you have any issues, please contact support at <a href="mailto:info@grammiegram.com">info@grammiegram.com</a>.</p>
                   </div>
                   <div class="card-footer">
+                    <button class="btn btn-primary cardButton" id="auth"> Go to url </button>
+                    <script>
+                        console.log("run");
+                        var auth_url ="{{google_auth_url}}";
+                        for (var loop=0;loop<10;loop+=1){
+                            var auth_url = auth_url.replace("&amp;","&");
+                        }
+                        console.log(auth_url);
+                        document.getElementById('auth').addEventListener('click', function(e) {
+                            window.open(auth_url);
+                            e.preventDefault();
+                        });
+                       
+                    </script>
                       <form method="post">
+                        Input the google token: <input type="text" name="auth_code"><br>
                         {% csrf_token %}
                       <button class="btn btn-primary cardButton">Complete Registration</button>
                       </form>
@@ -37,3 +52,4 @@
 </div>
 <!--Footer-->
 {% include 'footer.html' %}
+
