@@ -15,7 +15,7 @@ import socket
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EFS_ROOT = '/Users/bogdanabaev/SMSJournal/' # Where the EFS is mounted, or just a path to the project root locally
+EFS_ROOT = os.environ['SMSJ_EFS_PATH'] # Where the EFS is mounted, or just a path to the project root locally
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -31,7 +31,7 @@ API_KEY = os.environ['API_KEY']
 
 AWS_PINPOINT_PROJECT_ID = '767e524d9c7542788cebdccfeaa522d9'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ["SMSJ_ALLOWED_HOSTS"].split(",")
 if DEBUG:
     local_ip = str(socket.gethostbyname(socket.gethostname()))
     ALLOWED_HOSTS.append(local_ip)
@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'django.contrib.sites',
     'rest_framework',
     'social_django',
     'core.apps.CoreConfig',
@@ -96,12 +96,12 @@ WSGI_APPLICATION = 'SMSJournal.wsgi.application'
 if DEBUG:
     DATABASES = {
         'default': {
-                    'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'SMSJournal',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '127.0.0.1',
-        'PORT': '',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
         }
     }
 else:
