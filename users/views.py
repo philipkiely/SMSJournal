@@ -89,49 +89,18 @@ def phone_verify(request):
 def stripe_pay(request):
     return render(request, 'stripe_pay.html', {'user_email': request.user.email, 'username': request.user.username, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
-
 # url /account/initialize_journal_prompt/
 @login_required
 def initialize_journal_prompt(request):
     if request.method == "POST":
-        
-        print("a")
-        code = request.POST["auth_code"]
-        print("b")
-        sub = request.user.subscriber
-        print("c")
-        flow = InstalledAppFlow.from_client_secrets_file(
-                os.path.join(settings.EFS_ROOT, 'credentials.json'),
-                ['https://www.googleapis.com/auth/documents'])
-        flow.redirect_uri = flow._OOB_REDIRECT_URI
-        print("d")
-        flow.fetch_token(code=code)
-        print("fetched credentials {}".format(flow.credentials))
-        with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'wb') as token:
-            pickle.dump(flow.credentials, token)
-        service = build('docs', 'v1', credentials=flow.credentials)
-       
-        name = "SMSJournal"
-        
-        doc = service.documents().create(body={"title": name}).execute()
-        write_to_gdoc(doc["documentId"], "Welcome to SMSJournal! You can make journal entries to this file by sending messages to the SMSJournal phone number, (970)-507-7992. To send an entry to a different journal, just add a tag like @ideas and we'll find or create the journal \"ideas\" in your Google Drive.", service)
-        journal = Journal(subscriber=sub,
-                            name=process_journal_name(name),
-                            google_docs_id=doc["documentId"])
-        journal.save()
-        return render(request, 'initialize_journal_prompt.html')
-        #return initialize_journal(request)
+    
+        return initialize_journal(request)
     else:
         flow = InstalledAppFlow.from_client_secrets_file(
                 os.path.join(settings.EFS_ROOT, 'credentials.json'),
                 ['https://www.googleapis.com/auth/documents'])
-        print(flow)
         flow.redirect_uri = flow._OOB_REDIRECT_URI
-
         auth_url, _ = flow.authorization_url()
-        
-        print("auth url {}".format(auth_url))
-        #webbrowser.open(auth_url)
         return render(request, 'initialize_journal_prompt.html', {'google_auth_url':auth_url})
 
 
@@ -160,11 +129,13 @@ def initialize_journal(request):
             f.write("refresh suceeded\n")
         else:
             f.write("NOT creds and creds.expired and creds.refresh_token\n")
-            #flow = InstalledAppFlow.from_client_secrets_file(
-            #    os.path.join(settings.EFS_ROOT, 'credentials.json'),
-            #    ['https://www.googleapis.com/auth/documents'])
-            f.write("sick flow acquired\n")
 
+            flow = InstalledAppFlow.from_client_secrets_file(
+                os.path.join(settings.EFS_ROOT, 'credentials.json'),
+                ['https://www.googleapis.com/auth/documents'])
+            flow.redirect_uri = flow._OOB_REDIRECT_URI
+            flow.fetch_token(code=request.POST["auth_code"])
+            creds = flow.credentials
 
             # old run_local_server was killed here
         # Save the credentials for the next run
@@ -206,8 +177,9 @@ def initialize_journal(request):
                     flow = InstalledAppFlow.from_client_secrets_file(
                         os.path.join(settings.EFS_ROOT, 'credentials.json'),
                         ['https://www.googleapis.com/auth/documents'])
-                    f.write("sick flow acquired\n")
-                    creds = flow.run_local_server()
+                    flow.redirect_uri = flow._OOB_REDIRECT_URI
+                    flow.fetch_token(code=request.POST["auth_code"])
+                    creds = flow.credentials
                     f.write("creds acquired\n")
                 # Save the credentials for the next run
                 with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'wb') as token:

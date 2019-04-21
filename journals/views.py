@@ -77,10 +77,12 @@ def api_journal_entry(request):
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    os.path.join(settings.EFS_ROOT, 'credentials.json'),
-                    ['https://www.googleapis.com/auth/documents'])
-                creds = flow.run_local_server()
+                #flow = InstalledAppFlow.from_client_secrets_file(
+                #    os.path.join(settings.EFS_ROOT, 'credentials.json'),
+                #    ['https://www.googleapis.com/auth/documents'])
+                #creds = flow.run_local_server()
+                # we can't ask the user to authenticate here, cause it's api
+                return Response({"Error": "Subscriber did not give us google permissions"})
             # Save the credentials for the next run
             with open(os.path.join(settings.EFS_ROOT, str(subscriber.id) + 'token.pickle'), 'wb') as token:
                 pickle.dump(creds, token)
