@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    {% include 'head.html' %} 
+    {% include 'head.html' %}
 </head>
 <div class="container">
     <div class="row">
@@ -17,10 +17,10 @@
                 <div class="card h-100" id="phoneField">
                   <h4 class="card-header">Initialize Journal</h4>
                   <div class="card-body">
-                    <p class="card-text">Please press the button below to initialize your first journal. You may have to confirm your Google account again. If you have any issues, please contact support at <a href="mailto:info@grammiegram.com">info@grammiegram.com</a>.</p>
+                    <p class="card-text">Please press the "Create Journal" button below to initialize your first journal. It will take you to a webpage where, after confirming permission, you will receive a token to copy and paste into the field below. This step is necessary for maintaining the security of your Google account. If you have any issues, please contact support at <a href="mailto:info@grammiegram.com">info@grammiegram.com</a>.</p>
                   </div>
                   <div class="card-footer">
-                    <button class="btn btn-primary cardButton" id="auth"> Go to url </button>
+                    <button class="btn btn-primary cardButton" id="auth">Create Journal</button>
                     <script>
                         console.log("run");
                         var auth_url ="{{google_auth_url}}";
@@ -32,10 +32,11 @@
                             window.open(auth_url);
                             e.preventDefault();
                         });
-                       
+
                     </script>
                       <form method="post">
-                        Input the google token: <input type="text" name="auth_code"><br>
+                        <br>
+                        <input placeholder="Input the Google token" class="form-control" type="text" name="auth_code"><br><br>
                         {% csrf_token %}
                       <button class="btn btn-primary cardButton">Complete Registration</button>
                       </form>
@@ -52,4 +53,3 @@
 </div>
 <!--Footer-->
 {% include 'footer.html' %}
-
