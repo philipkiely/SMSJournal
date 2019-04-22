@@ -52,8 +52,7 @@ def api_root(request):
 @api_view(["GET", "POST"])
 @permission_classes((AllowAny,))
 def api_journal_entry(request):
-    print(request.POST.get("api_key"))
-    if request.POST.get("api_key").decode("utf-8") != settings.API_KEY: #will be env variable in settings
+    if request.POST.get("api_key") != settings.API_KEY: #will be env variable in settings
         return Response({"Error": "API Key Incorrect"})
     try:
         met = Metrics.objects.get(current=True)
@@ -61,7 +60,7 @@ def api_journal_entry(request):
     except:
         pass #never fail user request because of a metrics error
     try:
-        subscriber = Subscriber.objects.get(phone=request.POST.get("phone").decode("utf-8"))
+        subscriber = Subscriber.objects.get(phone=request.POST.get("phone"))
         user_journals = subscriber.journal_set.all()
     except:
         return Response({"Error": "Subscriber with that phone number not found"})
@@ -91,7 +90,7 @@ def api_journal_entry(request):
     except:
         return Response({"Error": "Google Service Initialization Error"})
     try:
-        names = request.POST.get("names").decode("utf-8").split(",")
+        names = request.POST.get("names").split(",")
     except:
         return Response({"Error": "names parameter not included in call"})
     if names == [""]:
@@ -99,10 +98,10 @@ def api_journal_entry(request):
     for name in names:
         try:
             journal = user_journals.get(name=process_journal_name(name))
-            write_to_gdoc(journal.google_docs_id, request.POST.get("message").decode("utf-8"), service)
+            write_to_gdoc(journal.google_docs_id, request.POST.get("message"), service)
         except:
             doc = service.documents().create(body={"title": name}).execute()
-            write_to_gdoc(doc["documentId"], request.POST.get("message").decode("utf-8"), service)
+            write_to_gdoc(doc["documentId"], request.POST.get("message"), service)
             journal = Journal(subscriber=subscriber,
                               name=process_journal_name(name),
                               google_docs_id=doc["documentId"])
