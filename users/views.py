@@ -23,7 +23,7 @@ from journals.views import write_to_gdoc
 from journals.models import Journal, process_journal_name
 import boto3
 import wsgiref.simple_server
-import webbrowser 
+import webbrowser
 
 #url /account
 @login_required
@@ -93,7 +93,7 @@ def stripe_pay(request):
 @login_required
 def initialize_journal_prompt(request):
     if request.method == "POST":
-    
+
         return initialize_journal(request)
     else:
         flow = InstalledAppFlow.from_client_secrets_file(
@@ -109,43 +109,6 @@ def initialize_journal_prompt(request):
 def initialize_journal(request):
     f = open(os.path.join(settings.EFS_ROOT, 'log.txt'), 'w') #DELETE THIS
     sub = request.user.subscriber
-    f.write("in google credentials try\n")
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle')):
-        f.write("in os.path.exists for token\n")
-        with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'rb') as token:
-            f.write("opening token pickle\n")
-            creds = pickle.load(token)
-            f.write("loaded pickle\n")
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        f.write("not creds or not valid creds\n")
-        if creds and creds.expired and creds.refresh_token:
-            f.write("creds and creds.expired and creds.refresh_token\n")
-            creds.refresh(Request())
-            f.write("refresh suceeded\n")
-        else:
-            f.write("NOT creds and creds.expired and creds.refresh_token\n")
-
-            flow = InstalledAppFlow.from_client_secrets_file(
-                os.path.join(settings.EFS_ROOT, 'credentials.json'),
-                ['https://www.googleapis.com/auth/documents'])
-            flow.redirect_uri = flow._OOB_REDIRECT_URI
-            flow.fetch_token(code=request.POST["auth_code"])
-            creds = flow.credentials
-
-            # old run_local_server was killed here
-        # Save the credentials for the next run
-        with open(os.path.join(settings.EFS_ROOT, str(sub.id) + 'token.pickle'), 'wb') as token:
-            f.write("save file open\n")
-            pickle.dump(creds, token)
-            f.write("pickle dumped\n")
-    service = build('docs', 'v1', credentials=creds)
-    f.write("service built\n")
-    f.write("got sub\n")
     if sub.total_entries == 0:
         f.write("In If\n")
         try:
@@ -254,6 +217,3 @@ def unsubscribe(request):
     except:
         pass
     return render(request, 'index.html')
-
-
-
