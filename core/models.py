@@ -26,8 +26,8 @@ def send_metrics(message, cutoff):
 
 
 def daily_metrics():
-    yesterday = Metrics.objects.get(current=True)
-    if yesterday is not None: #update daily metrics for previous day
+    try:
+        yesterday = Metrics.objects.get(current=True) #update daily metrics for previous day
         yesterday.total_active_users = Subscriber.objects.filter(active=True).count()
         cutoff = datetime.datetime.now() - datetime.timedelta(days=1)
         yesterday.daily_active_users = Subscriber.objects.filter(active=True).filter(last_entry__gte=cutoff).count()
@@ -41,7 +41,6 @@ def daily_metrics():
             yesterday.journal_entries_sent,
             yesterday.main_page_visits
         )
-    try: #make sure init always fires
         send_metrics(message, cutoff)
     except:
         pass
