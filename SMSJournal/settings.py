@@ -25,7 +25,7 @@ SECRET_KEY = str(os.environ['SMSJOURNAL_SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = bool(int(os.environ['SMSJOURNAL_DEBUG_INT'])) # 1 in test, 0 in prod
-DEBUG = 1
+DEBUG = 0
 API_KEY = os.environ['API_KEY']
 
 
